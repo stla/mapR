@@ -73,6 +73,19 @@ mapR <- R6Class(
       # cat(" center: ", toString(private[[".center"]]), "\n", sep = "")
       # cat(" radius: ", toString(private[[".radius"]]), "\n", sep = "")
     },
+
+    #' @description Size of the map.
+    #'
+    #' @return An integer, the number of entries.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
+    #' map$size()
+    size = function(){
+      private[[".map"]]$size()
+    },
     
     #' @description Get all keys.
     #'
@@ -85,6 +98,19 @@ mapR <- R6Class(
     #' map$keys()
     keys = function(){
       private[[".map"]]$keys()
+    },
+
+    #' @description Get all values.
+    #'
+    #' @return The values.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
+    #' map$values()
+    values = function(){
+      private[[".map"]]$values()
     },
     
     #' @description Returns the value corresponding to the given key

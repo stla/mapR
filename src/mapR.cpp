@@ -38,6 +38,11 @@ class MAPRPTR {
 public:
   MAPRPTR(Rcpp::XPtr<mapR> mapPTR_) : mapPTR(mapPTR_) {}
   
+  unsigned size(){
+    mapR map = *mapPTR;
+    return map.size();
+  }
+  
   std::vector<double> at(std::string key) {
     mapR map = *mapPTR;
     mapR::iterator it = map.find(key);
@@ -56,6 +61,19 @@ public:
     }
     return out;
   }
+  
+  Rcpp::List values(){
+    mapR map = *mapPTR;
+    const unsigned s = map.size();
+    Rcpp::List out(s);
+    unsigned i = 0;
+    for(mapR::iterator it = map.begin(); it != map.end(); it++){
+      out(i) = it->second;
+      i++;
+    }
+    return out;
+  }
+  
   
   void insert(std::string key, std::vector<double> value){
     mapR map = *mapPTR;
@@ -77,8 +95,10 @@ RCPP_MODULE(maprptrModule) {
   using namespace Rcpp;
   class_<MAPRPTR>("MAPRPTR")
     .constructor<Rcpp::XPtr<mapR>>()
+    .method("size", &MAPRPTR::size)
     .method("at", &MAPRPTR::at)
     .method("insert", &MAPRPTR::insert)
     .method("erase", &MAPRPTR::erase)
-    .method("keys", &MAPRPTR::keys);
+    .method("keys", &MAPRPTR::keys)
+    .method("values", &MAPRPTR::values);
 }
