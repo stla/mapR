@@ -133,6 +133,8 @@ mapR <- R6Class(
     #' @description Returns the value corresponding to the given key
     #'
     #' @param key a key
+    #' @param stop_if_not_found a Boolean value, whether to stopo if the key 
+    #'   is not found, or to return \code{NaN}
     #'
     #' @return a value
     #'
@@ -141,9 +143,18 @@ mapR <- R6Class(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
-    at = function(key){
+    #' map$at("x", stop_if_not_found = FALSE)
+    at = function(key, stop_if_not_found = TRUE){
       stopifnot(isString(key))
-      private[[".map"]]$at(key)
+      if(stop_if_not_found){
+        private[[".map"]]$at(key)
+      }else{
+        tryCatch({
+          private[[".map"]]$at(key)
+        }, error = function(e){
+          NaN
+        })
+      }
     },
 
     #' @description Checks if a key exists.
@@ -166,6 +177,8 @@ mapR <- R6Class(
     #' @description Returns the n-th entry.
     #'
     #' @param n a positive integer
+    #' @param stop_if_too_large a Boolean value, whether to stop if \code{n}
+    #'   is too large, or to return \code{NaN}
     #'
     #' @return A list with the key and the value at index \code{n}.
     #'
@@ -174,9 +187,17 @@ mapR <- R6Class(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$nth(2)
-    nth = function(n){
+    nth = function(n, stop_if_too_large = TRUE){
       stopifnot(isPositiveInteger(n))
-      private[[".map"]]$nth(as.integer(n) - 1L)
+      if(stop_if_too_large){
+        private[[".map"]]$nth(as.integer(n) - 1L)
+      }else{
+        tryCatch({
+          private[[".map"]]$nth(as.integer(n) - 1L)
+        }, error = function(e){
+          NaN
+        })
+      }
     },
     
     #' @description Insert a new key-value pair.
