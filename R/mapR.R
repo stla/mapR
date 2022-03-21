@@ -112,6 +112,21 @@ mapR <- R6Class(
     values = function(){
       private[[".map"]]$values()
     },
+
+    #' @description Get all entries.
+    #'
+    #' @return The entries in a dataframe.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
+    #' map$items()
+    items = function(){
+      keys <- self$keys()
+      values <- self$values()
+      data.frame(key = keys, value = I(values))
+    },
     
     #' @description Returns the value corresponding to the given key
     #'
