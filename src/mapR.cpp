@@ -48,7 +48,22 @@ public:
     }
   }
   
-private:
+  std::vector<std::string> keys(){
+    mapR map = *mapPTR;
+    std::vector<std::string> out(0);
+    for(mapR::iterator it = map.begin();it != map.end(); it++){
+      out.push_back(it->first);
+    }
+    return out;
+  }
+  
+  void insert(std::string key, std::vector<double> value){
+    mapR map = *mapPTR;
+    map.emplace(key, value);
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+  }
+  
+protected:
   Rcpp::XPtr<mapR> mapPTR;
 };
 
@@ -56,5 +71,7 @@ RCPP_MODULE(maprptrModule) {
   using namespace Rcpp;
   class_<MAPRPTR>("MAPRPTR")
     .constructor<Rcpp::XPtr<mapR>>()
-    .method("at", &MAPRPTR::at);
+    .method("at", &MAPRPTR::at)
+    .method("insert", &MAPRPTR::insert)
+    .method("keys", &MAPRPTR::keys);
 }
