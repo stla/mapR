@@ -52,6 +52,11 @@ public:
       Rcpp::stop("Key not found.");
     }
   }
+
+  bool has_key(std::string key) {
+    mapR map = *mapPTR;
+    return map.contains(key);
+  }
   
   std::vector<std::string> keys(){
     mapR map = *mapPTR;
@@ -97,6 +102,7 @@ RCPP_MODULE(maprptrModule) {
     .constructor<Rcpp::XPtr<mapR>>()
     .method("size", &MAPRPTR::size)
     .method("at", &MAPRPTR::at)
+    .method("has_key", &MAPRPTR::has_key)
     .method("insert", &MAPRPTR::insert)
     .method("erase", &MAPRPTR::erase)
     .method("keys", &MAPRPTR::keys)

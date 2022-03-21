@@ -120,11 +120,30 @@ mapR <- R6Class(
     #' @return a value
     #'
     #' @examples
-    #' map <- mapR$new(keys = c("a", "b"), values = list(c(1,2), c(3,4,5)))
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
     #' map$at("b")
     at = function(key){
       stopifnot(isString(key))
       private[[".map"]]$at(key)
+    },
+
+    #' @description Checks if a key exists.
+    #'
+    #' @param key a string
+    #'
+    #' @return A Boolean value.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
+    #' map$has_key("b")
+    #' map$has_key("x")
+    has_key = function(key){
+      stopifnot(isString(key))
+      private[[".map"]]$has_key(key)
     },
     
     #' @description Insert a new key-value pair.
