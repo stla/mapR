@@ -62,6 +62,12 @@ public:
     map.emplace(key, value);
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
+
+  void erase(std::string key){
+    mapR map = *mapPTR;
+    map.erase(key);
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+  }
   
 protected:
   Rcpp::XPtr<mapR> mapPTR;
@@ -73,5 +79,6 @@ RCPP_MODULE(maprptrModule) {
     .constructor<Rcpp::XPtr<mapR>>()
     .method("at", &MAPRPTR::at)
     .method("insert", &MAPRPTR::insert)
+    .method("erase", &MAPRPTR::erase)
     .method("keys", &MAPRPTR::keys);
 }

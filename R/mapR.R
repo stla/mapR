@@ -118,6 +118,24 @@ mapR <- R6Class(
       stopifnot(isString(key))
       stopifnot(isNumericVector(value))
       private[[".map"]]$insert(key, value)
+    },
+    
+    #' @description Erase an entry.
+    #'
+    #' @param key a key
+    #'
+    #' @return Nothing
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #' )
+    #' map$erase("a")
+    #' map$keys()
+    erase = function(key){
+      stopifnot(isString(key))
+      private[[".map"]]$erase(key)
     }
+    
   )
 )
