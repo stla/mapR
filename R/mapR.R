@@ -48,7 +48,7 @@ mapR <- R6Class(
     #' @return A \code{mapR} object.
     #'
     #' @examples
-    #' map <- mapR$new(keys = c("a", "b"), values = list(c(1,2), c(3,4,5)))
+    #' map <- mapR$new(keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5)))
     initialize = function(keys, values) {
       keys <- as.character(keys)
       if(any(is.na(keys))){
@@ -82,7 +82,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$size()
     size = function(){
@@ -95,7 +95,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$keys()
     keys = function(){
@@ -108,7 +108,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$values()
     values = function(){
@@ -121,7 +121,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$items()
     items = function(){
@@ -138,7 +138,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
     at = function(key){
@@ -154,13 +154,29 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$has_key("b")
     #' map$has_key("x")
     has_key = function(key){
       stopifnot(isString(key))
       private[[".map"]]$has_key(key)
+    },
+
+    #' @description Returns the n-th entry.
+    #'
+    #' @param n a positive integer
+    #'
+    #' @return A list with the key and the value at index \code{n}.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map$nth(2)
+    nth = function(n){
+      stopifnot(isPositiveInteger(n))
+      private[[".map"]]$nth(as.integer(n) - 1L)
     },
     
     #' @description Insert a new key-value pair.
@@ -172,7 +188,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$insert("c", c(6, 7))
     #' map$keys()
@@ -190,7 +206,7 @@ mapR <- R6Class(
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1,2), c(3,4,5))
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$erase("a")
     #' map$keys()

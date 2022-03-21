@@ -58,6 +58,18 @@ public:
     return map.contains(key);
   }
   
+  Rcpp::List nth(const unsigned i){
+    mapR map = *mapPTR;
+    const unsigned s = map.size();
+    if(i >= s){
+      Rcpp::stop("Index too large.");
+    }
+    mapR::iterator it = map.nth(i);
+    std::string key = it->first;
+    std::vector<double> value = it->second;
+    return Rcpp::List::create(Rcpp::Named("key") = key , Rcpp::Named("value") = value);
+  }
+  
   std::vector<std::string> keys(){
     mapR map = *mapPTR;
     std::vector<std::string> out(0);
@@ -109,6 +121,7 @@ RCPP_MODULE(maprptrModule) {
     .method("size", &MAPRPTR::size)
     .method("at", &MAPRPTR::at)
     .method("has_key", &MAPRPTR::has_key)
+    .method("nth", &MAPRPTR::nth)
     .method("insert", &MAPRPTR::insert)
     .method("erase", &MAPRPTR::erase)
     .method("merge", &MAPRPTR::merge)
