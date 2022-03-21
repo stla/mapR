@@ -71,9 +71,13 @@ mapR <- R6Class(
     #' @description Show instance of a \code{mapR} object.
     #' @param ... ignored
     print = function(...) {
-      cat("Circle:\n")
-      # cat(" center: ", toString(private[[".center"]]), "\n", sep = "")
-      # cat(" radius: ", toString(private[[".radius"]]), "\n", sep = "")
+      size <- self$size()
+      keys <- sprintf('"%s"', self$keys())
+      values <- vapply(self$values(), toString, character(1L))
+      s <- ifelse(size > 1L, "s", "")
+      cat(sprintf("`mapR` containing %d item%s:\n\n", size, s))
+      lines <- paste0("  ", keys, " -> ", values)
+      cat(lines, sep = "\n")
     },
 
     #' @description Size of the map.
