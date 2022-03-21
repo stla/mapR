@@ -79,7 +79,6 @@ public:
     return out;
   }
   
-  
   void insert(std::string key, std::vector<double> value){
     mapR map = *mapPTR;
     map.emplace(key, value);
@@ -90,6 +89,13 @@ public:
     mapR map = *mapPTR;
     map.erase(key);
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+  }
+  
+  void merge(Rcpp::XPtr<mapR> map) {
+    mapR map1 = *mapPTR;
+    mapR map2 = *map;
+    map1.merge(map2);
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map1));
   }
   
 protected:
@@ -105,6 +111,7 @@ RCPP_MODULE(maprptrModule) {
     .method("has_key", &MAPRPTR::has_key)
     .method("insert", &MAPRPTR::insert)
     .method("erase", &MAPRPTR::erase)
+    .method("merge", &MAPRPTR::merge)
     .method("keys", &MAPRPTR::keys)
     .method("values", &MAPRPTR::values);
 }

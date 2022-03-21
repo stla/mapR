@@ -17,6 +17,7 @@ mapR <- R6Class(
   "mapR",
   
   private = list(
+    .ptr = NULL,
     .map = NULL,
     .items = NULL
   ),
@@ -62,6 +63,7 @@ mapR <- R6Class(
         stop("The values must be given as a list of numeric vectors.")
       }
       ptr <- new(MAPR, keys, values)$mapPointer()
+      private[[".ptr"]] <- ptr
       private[[".map"]] <- new(MAPRPTR, ptr)
       private[[".items"]] <- data.frame(keys = keys, values = I(values))
     },
@@ -195,6 +197,27 @@ mapR <- R6Class(
     erase = function(key){
       stopifnot(isString(key))
       private[[".map"]]$erase(key)
+    },
+
+    #' @description Merge with another map.
+    #'
+    #' @param map a \code{mapR} object
+    #'
+    #' @return Nothing.
+    #'
+    #' @examples
+    #' map1 <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map2 <- mapR$new(
+    #'   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
+    #' )
+    #' map1$merge(map2)
+    #' map1$items()
+    merge = function(map){
+      stopifnot(inherits(map, "mapR"))
+      map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
+      private[[".map"]]$merge(map2)
     }
     
   )
