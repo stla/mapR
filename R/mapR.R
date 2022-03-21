@@ -130,6 +130,23 @@ mapR <- R6Class(
       data.frame(key = keys, value = I(values))
     },
     
+
+    #' @description Converts the map to a list.
+    #'
+    #' @return A named list.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map$toList()
+    toList = function(){
+      keys <- self$keys()
+      values <- self$values()
+      names(values) <- keys
+      values
+    },
+    
     #' @description Returns the value corresponding to the given key
     #'
     #' @param key a key
@@ -200,7 +217,7 @@ mapR <- R6Class(
       }
     },
     
-    #' @description Insert a new key-value pair.
+    #' @description Insert a new entry.
     #'
     #' @param key a key
     #' @param value a value
