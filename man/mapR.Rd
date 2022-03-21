@@ -12,7 +12,9 @@ A map is given by keys and values.
 ## Method `mapR$new`
 ## ------------------------------------------------
 
-map <- mapR$new(keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5)))
+mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
 
 ## ------------------------------------------------
 ## Method `mapR$size`
@@ -87,6 +89,7 @@ map <- mapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$nth(2)
+map$nth(9, stop_if_too_large = FALSE)
 
 ## ------------------------------------------------
 ## Method `mapR$insert`
@@ -106,7 +109,7 @@ map <- mapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$erase("a")
-map$keys()
+map
 
 ## ------------------------------------------------
 ## Method `mapR$merge`
@@ -119,7 +122,7 @@ map2 <- mapR$new(
   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
 )
 map1$merge(map2)
-map1$items()
+map1
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -163,7 +166,9 @@ A \code{mapR} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{map <- mapR$new(keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5)))
+\preformatted{mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
 }
 \if{html}{\out{</div>}}
 
@@ -221,7 +226,7 @@ Get all keys.
 }
 
 \subsection{Returns}{
-The keys.
+The keys, a character vector.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -245,7 +250,7 @@ Get all values.
 }
 
 \subsection{Returns}{
-The values.
+The values, a list of numeric vectors.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -311,7 +316,7 @@ map$toList()
 \if{html}{\out{<a id="method-at"></a>}}
 \if{latex}{\out{\hypertarget{method-at}{}}}
 \subsection{Method \code{at()}}{
-Returns the value corresponding to the given key
+Returns the value corresponding to the given key.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{mapR$at(key, stop_if_not_found = TRUE)}\if{html}{\out{</div>}}
 }
@@ -319,15 +324,15 @@ Returns the value corresponding to the given key
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{a key}
+\item{\code{key}}{a key (string)}
 
-\item{\code{stop_if_not_found}}{a Boolean value, whether to stopo if the key 
+\item{\code{stop_if_not_found}}{a Boolean value, whether to stop if the key 
 is not found, or to return \code{NaN}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-a value
+The value corresponding to the key, a numeric vector.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -346,7 +351,7 @@ map$at("x", stop_if_not_found = FALSE)
 \if{html}{\out{<a id="method-has_key"></a>}}
 \if{latex}{\out{\hypertarget{method-has_key}{}}}
 \subsection{Method \code{has_key()}}{
-Checks if a key exists.
+Checks whether a key exists.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{mapR$has_key(key)}\if{html}{\out{</div>}}
 }
@@ -402,6 +407,7 @@ A list with the key and the value at index \code{n}.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$nth(2)
+map$nth(9, stop_if_too_large = FALSE)
 }
 \if{html}{\out{</div>}}
 
@@ -420,14 +426,14 @@ Insert a new entry.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{a key}
+\item{\code{key}}{a key (string)}
 
-\item{\code{value}}{a value}
+\item{\code{value}}{a value (numeric vector)}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing
+Nothing, this updates the map.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -459,7 +465,7 @@ Erase an entry.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing
+Nothing, this updates the map.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -467,7 +473,7 @@ Nothing
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$erase("a")
-map$keys()
+map
 }
 \if{html}{\out{</div>}}
 
@@ -491,7 +497,7 @@ Merge with another map.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing.
+Nothing, this updates the reference map.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -502,7 +508,7 @@ map2 <- mapR$new(
   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
 )
 map1$merge(map2)
-map1$items()
+map1
 }
 \if{html}{\out{</div>}}
 

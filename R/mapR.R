@@ -18,8 +18,7 @@ mapR <- R6Class(
   
   private = list(
     .ptr = NULL,
-    .map = NULL,
-    .items = NULL
+    .map = NULL
   ),
   
   # active = list(
@@ -48,7 +47,9 @@ mapR <- R6Class(
     #' @return A \code{mapR} object.
     #'
     #' @examples
-    #' map <- mapR$new(keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5)))
+    #' mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
     initialize = function(keys, values) {
       keys <- as.character(keys)
       if(any(is.na(keys))){
@@ -65,7 +66,6 @@ mapR <- R6Class(
       ptr <- new(MAPR, keys, values)$mapPointer()
       private[[".ptr"]] <- ptr
       private[[".map"]] <- new(MAPRPTR, ptr)
-      private[[".items"]] <- data.frame(keys = keys, values = I(values))
     },
     
     #' @description Show instance of a \code{mapR} object.
@@ -95,7 +95,7 @@ mapR <- R6Class(
     
     #' @description Get all keys.
     #'
-    #' @return The keys.
+    #' @return The keys, a character vector.
     #'
     #' @examples
     #' map <- mapR$new(
@@ -108,7 +108,7 @@ mapR <- R6Class(
 
     #' @description Get all values.
     #'
-    #' @return The values.
+    #' @return The values, a list of numeric vectors.
     #'
     #' @examples
     #' map <- mapR$new(
@@ -134,7 +134,6 @@ mapR <- R6Class(
       data.frame(key = keys, value = I(values))
     },
     
-
     #' @description Converts the map to a list.
     #'
     #' @return A named list.
@@ -151,13 +150,13 @@ mapR <- R6Class(
       values
     },
     
-    #' @description Returns the value corresponding to the given key
+    #' @description Returns the value corresponding to the given key.
     #'
-    #' @param key a key
-    #' @param stop_if_not_found a Boolean value, whether to stopo if the key 
+    #' @param key a key (string)
+    #' @param stop_if_not_found a Boolean value, whether to stop if the key 
     #'   is not found, or to return \code{NaN}
     #'
-    #' @return a value
+    #' @return The value corresponding to the key, a numeric vector.
     #'
     #' @examples
     #' map <- mapR$new(
@@ -178,7 +177,7 @@ mapR <- R6Class(
       }
     },
 
-    #' @description Checks if a key exists.
+    #' @description Checks whether a key exists.
     #'
     #' @param key a string
     #'
@@ -208,6 +207,7 @@ mapR <- R6Class(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$nth(2)
+    #' map$nth(9, stop_if_too_large = FALSE)
     nth = function(n, stop_if_too_large = TRUE){
       stopifnot(isPositiveInteger(n))
       if(stop_if_too_large){
@@ -223,10 +223,10 @@ mapR <- R6Class(
     
     #' @description Insert a new entry.
     #'
-    #' @param key a key
-    #' @param value a value
+    #' @param key a key (string)
+    #' @param value a value (numeric vector)
     #'
-    #' @return Nothing
+    #' @return Nothing, this updates the map.
     #'
     #' @examples
     #' map <- mapR$new(
@@ -244,14 +244,14 @@ mapR <- R6Class(
     #'
     #' @param key a key
     #'
-    #' @return Nothing
+    #' @return Nothing, this updates the map.
     #'
     #' @examples
     #' map <- mapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$erase("a")
-    #' map$keys()
+    #' map
     erase = function(key){
       stopifnot(isString(key))
       private[[".map"]]$erase(key)
@@ -261,7 +261,7 @@ mapR <- R6Class(
     #'
     #' @param map a \code{mapR} object
     #'
-    #' @return Nothing.
+    #' @return Nothing, this updates the reference map.
     #'
     #' @examples
     #' map1 <- mapR$new(
@@ -271,7 +271,7 @@ mapR <- R6Class(
     #'   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
     #' )
     #' map1$merge(map2)
-    #' map1$items()
+    #' map1
     merge = function(map){
       stopifnot(inherits(map, "mapR"))
       map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
