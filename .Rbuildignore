@@ -3,3 +3,4 @@
 ^LICENSE$
 ^\.Rprofile$
 ^\.github$
+^inst/trash$

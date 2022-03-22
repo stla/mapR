@@ -4,47 +4,68 @@
 
 typedef boost::container::flat_map<std::string, std::vector<double>> mapR;
 
-Rcpp::XPtr<mapR> mapPointer(std::vector<std::string> keys, Rcpp::List values) {
+// Rcpp::XPtr<mapR> mapPointer(std::vector<std::string> keys, Rcpp::List values) {
+//   mapR map;
+//   for(size_t i = 0; i < keys.size(); i++) {
+//     std::vector<double> v = values[i];
+//     map.emplace(keys[i], v);
+//   }
+//   Rcpp::XPtr<mapR> ptr(new mapR(map), true);
+//   // ptr.attr("class") = "mapR";
+//   return ptr;
+// }
+
+mapR mapNew(std::vector<std::string> keys, Rcpp::List values) {
   mapR map;
   for(size_t i = 0; i < keys.size(); i++) {
     std::vector<double> v = values[i];
     map.emplace(keys[i], v);
   }
-  Rcpp::XPtr<mapR> ptr(new mapR(map), true);
-  // ptr.attr("class") = "mapR";
-  return ptr;
+  return map;
+  // Rcpp::XPtr<mapR> ptr(new mapR(map), true);
+  // // ptr.attr("class") = "mapR";
+  // return ptr;
 }
 
 class MAPR {
- public:
-  MAPR(std::vector<std::string> keys_, Rcpp::List values_)
-      : keys(keys_), values(values_) {}
-
-  Rcpp::XPtr<mapR> toMAPR() { return mapPointer(keys, values); }
-
- private:
   std::vector<std::string> keys;
   Rcpp::List values;
+  
+ public:
+  MAPR(std::vector<std::string> keys_, Rcpp::List values_)
+      : keys(keys_), values(values_), ptr(new mapR(mapNew(keys_, values_))) {}
+
+   Rcpp::XPtr<mapR> ptr;
+   
+  // Rcpp::XPtr<mapR> toMAPR() { return mapPointer(keys, values); }
+
+ // private:
+ //  std::vector<std::string> keys;
+ //  Rcpp::List values;
 };
 
 RCPP_MODULE(maprModule) {
   using namespace Rcpp;
   class_<MAPR>("MAPR")
       .constructor<std::vector<std::string>, Rcpp::List>()
-      .method("mapPointer", &MAPR::toMAPR);
+      .field_readonly("ptr", &MAPR::ptr);
+      // .method("mapPointer", &MAPR::toMAPR);
 }
 
 class MAPRPTR {
+  Rcpp::XPtr<mapR> mapPTR;
+  mapR map;
+
  public:
-  MAPRPTR(Rcpp::XPtr<mapR> mapPTR_) : mapPTR(mapPTR_) {}
+  MAPRPTR(Rcpp::XPtr<mapR> mapPTR_) : mapPTR(mapPTR_), map(*mapPTR_) {}
 
   unsigned size() {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     return map.size();
   }
 
   std::vector<double> at(std::string key) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     mapR::iterator it = map.find(key);
     if(it != map.end()) {
       return it->second;
@@ -53,23 +74,23 @@ class MAPRPTR {
     }
   }
 
-   unsigned index(std::string key) {
-     mapR map = *mapPTR;
-     mapR::iterator it = map.find(key);
-     if(it != map.end()) {
-       return map.index_of(it) + 1;
-     } else {
-       return 0;
-     }
-   }
-   
+  unsigned index(std::string key) {
+    // mapR map = *mapPTR;
+    mapR::iterator it = map.find(key);
+    if(it != map.end()) {
+      return map.index_of(it) + 1;
+    } else {
+      return 0;
+    }
+  }
+
   bool has_key(std::string key) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     return map.contains(key);
   }
 
   Rcpp::List nth(const unsigned i) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     const unsigned s = map.size();
     if(i >= s) {
       Rcpp::stop("Index too large.");
@@ -82,7 +103,7 @@ class MAPRPTR {
   }
 
   std::vector<std::string> keys() {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     std::vector<std::string> out(0);
     for(mapR::iterator it = map.begin(); it != map.end(); it++) {
       out.push_back(it->first);
@@ -91,7 +112,7 @@ class MAPRPTR {
   }
 
   Rcpp::List values() {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     const unsigned s = map.size();
     Rcpp::List out(s);
     unsigned i = 0;
@@ -103,40 +124,41 @@ class MAPRPTR {
   }
 
   void insert(std::string key, std::vector<double> value) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     map.emplace(key, value);
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
 
   void assign(std::string key, std::vector<double> value) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     map.insert_or_assign(key, value);
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
-   
+
   void erase(std::string key) {
-    mapR map = *mapPTR;
+    // mapR map = *mapPTR;
     map.erase(key);
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
 
-   void merase(std::vector<std::string> keys) {
-     mapR map = *mapPTR;
-     for(std::string key : keys){
-       map.erase(key);
-     }
-     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
-   }
-   
-  void merge(Rcpp::XPtr<mapR> map) {
-    mapR map1 = *mapPTR;
-    mapR map2 = *map;
-    map1.merge(map2);
-    mapPTR = Rcpp::XPtr<mapR>(new mapR(map1));
+  void merase(std::vector<std::string> keys) {
+    // mapR map = *mapPTR;
+    for(std::string key : keys) {
+      map.erase(key);
+    }
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
 
- protected:
-  Rcpp::XPtr<mapR> mapPTR;
+  void merge(Rcpp::XPtr<mapR> map2) {
+    // mapR map1 = *mapPTR;
+    // mapR map2 = *map2;
+    map.merge(*map2);
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+  }
+
+  // protected:
+  //  Rcpp::XPtr<mapR> mapPTR;
+  //  mapR map;
 };
 
 RCPP_MODULE(maprptrModule) {

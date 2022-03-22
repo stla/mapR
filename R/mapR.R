@@ -79,7 +79,7 @@ mapR <- R6Class(
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
       }
-      ptr <- new(MAPR, keys, values)$mapPointer()
+      ptr <- new(MAPR, keys, values)$ptr#mapPointer()
       private[[".ptr"]] <- ptr
       private[[".map"]] <- new(MAPRPTR, ptr)
     },
