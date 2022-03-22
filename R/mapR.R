@@ -45,6 +45,7 @@ mapR <- R6Class(
     #' @param values values, a list of numeric vectors; \code{keys} and 
     #'   \code{values} must have the same length
     #' @param join Boolean, whether to join the values of duplicated keys
+    #' @param checks Boolean, whether to check \code{keys} and \code{values}
     #'
     #' @return A \code{mapR} object.
     #'
@@ -61,18 +62,20 @@ mapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   join = TRUE
     #' )
-    initialize = function(keys, values, join = FALSE) {
-      keys <- as.character(keys)
-      if(any(is.na(keys))){
-        stop("Keys cannot contain missing values.")
-      }
-      stopifnot(
-        is.list(values),
-        length(keys) == length(values)
-      )
-      modes <- vapply(values, mode, character(1L))
-      if(any(modes != "numeric")){
-        stop("The values must be given as a list of numeric vectors.")
+    initialize = function(keys, values, join = FALSE, checks = TRUE){
+      if(checks){
+        keys <- as.character(keys)
+        if(any(is.na(keys))){
+          stop("Keys cannot contain missing values.")
+        }
+        stopifnot(
+          is.list(values),
+          length(keys) == length(values)
+        )
+        modes <- vapply(values, mode, character(1L))
+        if(any(modes != "numeric")){
+          stop("The values must be given as a list of numeric vectors.")
+        }
       }
       if(join && anyDuplicated(keys)){
         splt <- split(values, keys)
@@ -236,7 +239,7 @@ mapR <- R6Class(
       stopifnot(isCharacterVector(keys))
       keys <- intersect(keys, self$keys())
       lst <- self$toList()
-      mapR$new(keys, lst[keys])
+      mapR$new(keys, lst[keys], checks = FALSE) 
     },
     
     #' @description Checks whether a key exists in a map.
@@ -376,7 +379,7 @@ mapR <- R6Class(
         splt <- split(values, keys)
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
-        ptr <- new(MAPR, keys, values)$mapPointer()
+        ptr <- new(MAPR, keys, values)$ptr#mapPointer()
         private[[".ptr"]] <- ptr
         private[[".map"]] <- new(MAPRPTR, ptr)
       }else{

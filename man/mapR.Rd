@@ -203,7 +203,7 @@ map1
 \subsection{Method \code{new()}}{
 Creates a new \code{mapR} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{mapR$new(keys, values, join = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{mapR$new(keys, values, join = FALSE, checks = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -215,6 +215,8 @@ Creates a new \code{mapR} object.
 \code{values} must have the same length}
 
 \item{\code{join}}{Boolean, whether to join the values of duplicated keys}
+
+\item{\code{checks}}{Boolean, whether to check \code{keys} and \code{values}}
 }
 \if{html}{\out{</div>}}
 }
