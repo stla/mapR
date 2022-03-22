@@ -41,8 +41,10 @@ mapR <- R6Class(
     
     #' @description Creates a new \code{mapR} object.
     #'
-    #' @param keys keys
-    #' @param values v
+    #' @param keys keys, a character vector
+    #' @param values values, a list of numeric vectors; \code{keys} and 
+    #'   \code{values} must have the same length
+    #' @param join Boolean, whether to join the values of duplicated keys
     #'
     #' @return A \code{mapR} object.
     #'
@@ -50,7 +52,16 @@ mapR <- R6Class(
     #' mapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    initialize = function(keys, values) {
+    #' mapR$new(
+    #'   keys = c("a", "a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4), c(5, 6))
+    #' )
+    #' mapR$new(
+    #'   keys = c("a", "a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
+    #'   join = TRUE
+    #' )
+    initialize = function(keys, values, join = FALSE) {
       keys <- as.character(keys)
       if(any(is.na(keys))){
         stop("Keys cannot contain missing values.")
@@ -62,6 +73,11 @@ mapR <- R6Class(
       modes <- vapply(values, mode, character(1L))
       if(any(modes != "numeric")){
         stop("The values must be given as a list of numeric vectors.")
+      }
+      if(join && anyDuplicated(keys)){
+        splt <- split(values, keys)
+        values <- lapply(splt, function(x) do.call(c, x))
+        keys <- names(values)
       }
       ptr <- new(MAPR, keys, values)$mapPointer()
       private[[".ptr"]] <- ptr
@@ -260,6 +276,8 @@ mapR <- R6Class(
     #' @description Merge with another map.
     #'
     #' @param map a \code{mapR} object
+    #' @param join Boolean, whether to join the values if the reference map 
+    #'   and \code{map} have some identical keys
     #'
     #' @return Nothing, this updates the reference map.
     #'
@@ -272,10 +290,36 @@ mapR <- R6Class(
     #' )
     #' map1$merge(map2)
     #' map1
-    merge = function(map){
+    #' 
+    #' # `join` example ####
+    #' map1 <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map2 <- mapR$new(
+    #'   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
+    #' )
+    #' map1$merge(map2, join = FALSE)
+    #' map1
+    #' 
+    #' map1 <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map1$merge(map2, join = TRUE)
+    #' map1
+    merge = function(map, join = FALSE){
       stopifnot(inherits(map, "mapR"))
-      map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
-      private[[".map"]]$merge(map2)
+      if(join && anyDuplicated(keys <- c(self$keys(), map$keys()))){
+        values <- c(self$values(), map$values())
+        splt <- split(values, keys)
+        values <- lapply(splt, function(x) do.call(c, x))
+        keys <- names(values)
+        ptr <- new(MAPR, keys, values)$mapPointer()
+        private[[".ptr"]] <- ptr
+        private[[".map"]] <- new(MAPRPTR, ptr)
+      }else{
+        map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
+        private[[".map"]]$merge(map2)
+      }
     }
     
   )

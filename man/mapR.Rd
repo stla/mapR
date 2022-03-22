@@ -15,6 +15,15 @@ A map is given by keys and values.
 mapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
+mapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6))
+)
+mapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6)),
+  join = TRUE
+)
 
 ## ------------------------------------------------
 ## Method `mapR$size`
@@ -123,6 +132,22 @@ map2 <- mapR$new(
 )
 map1$merge(map2)
 map1
+
+# `join` example ####
+map1 <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map2 <- mapR$new(
+  keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
+)
+map1$merge(map2, join = FALSE)
+map1
+
+map1 <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map1$merge(map2, join = TRUE)
+map1
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -149,15 +174,18 @@ map1
 \subsection{Method \code{new()}}{
 Creates a new \code{mapR} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{mapR$new(keys, values)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{mapR$new(keys, values, join = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{keys}}{keys}
+\item{\code{keys}}{keys, a character vector}
 
-\item{\code{values}}{v}
+\item{\code{values}}{values, a list of numeric vectors; \code{keys} and 
+\code{values} must have the same length}
+
+\item{\code{join}}{Boolean, whether to join the values of duplicated keys}
 }
 \if{html}{\out{</div>}}
 }
@@ -168,6 +196,15 @@ A \code{mapR} object.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{mapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+mapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6))
+)
+mapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6)),
+  join = TRUE
 )
 }
 \if{html}{\out{</div>}}
@@ -486,13 +523,16 @@ map
 \subsection{Method \code{merge()}}{
 Merge with another map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{mapR$merge(map)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{mapR$merge(map, join = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{map}}{a \code{mapR} object}
+
+\item{\code{join}}{Boolean, whether to join the values if the reference map 
+and \code{map} have some identical keys}
 }
 \if{html}{\out{</div>}}
 }
@@ -508,6 +548,22 @@ map2 <- mapR$new(
   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
 )
 map1$merge(map2)
+map1
+
+# `join` example ####
+map1 <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map2 <- mapR$new(
+  keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
+)
+map1$merge(map2, join = FALSE)
+map1
+
+map1 <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map1$merge(map2, join = TRUE)
 map1
 }
 \if{html}{\out{</div>}}
