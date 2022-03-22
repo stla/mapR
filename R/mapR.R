@@ -241,6 +241,8 @@ mapR <- R6Class(
     #'
     #' @param key a key (string)
     #' @param value a value (numeric vector)
+    #' @param replace Boolean, whether to replace the value if the key is 
+    #'   already present
     #'
     #' @return Nothing, this updates the map.
     #'
@@ -249,11 +251,19 @@ mapR <- R6Class(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$insert("c", c(6, 7))
-    #' map$keys()
-    insert = function(key, value){
+    #' map
+    #' map$insert("a", c(8, 9))
+    #' map
+    #' map$insert("a", c(8, 9), replace = TRUE)
+    #' map
+    insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
       stopifnot(isNumericVector(value))
-      private[[".map"]]$insert(key, value)
+      if(replace){
+        private[[".map"]]$assign(key, value)
+      }else{
+        private[[".map"]]$insert(key, value)
+      }
     },
     
     #' @description Erase an entry.

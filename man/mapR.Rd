@@ -108,7 +108,11 @@ map <- mapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$insert("c", c(6, 7))
-map$keys()
+map
+map$insert("a", c(8, 9))
+map
+map$insert("a", c(8, 9), replace = TRUE)
+map
 
 ## ------------------------------------------------
 ## Method `mapR$erase`
@@ -457,7 +461,7 @@ map$nth(9, stop_if_too_large = FALSE)
 \subsection{Method \code{insert()}}{
 Insert a new entry.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{mapR$insert(key, value)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{mapR$insert(key, value, replace = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -466,6 +470,9 @@ Insert a new entry.
 \item{\code{key}}{a key (string)}
 
 \item{\code{value}}{a value (numeric vector)}
+
+\item{\code{replace}}{Boolean, whether to replace the value if the key is 
+already present}
 }
 \if{html}{\out{</div>}}
 }
@@ -478,7 +485,11 @@ Nothing, this updates the map.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$insert("c", c(6, 7))
-map$keys()
+map
+map$insert("a", c(8, 9))
+map
+map$insert("a", c(8, 9), replace = TRUE)
+map
 }
 \if{html}{\out{</div>}}
 

@@ -98,6 +98,12 @@ class MAPRPTR {
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
 
+  void assign(std::string key, std::vector<double> value) {
+    mapR map = *mapPTR;
+    map.insert_or_assign(key, value);
+    mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+  }
+   
   void erase(std::string key) {
     mapR map = *mapPTR;
     map.erase(key);
@@ -124,6 +130,7 @@ RCPP_MODULE(maprptrModule) {
       .method("has_key", &MAPRPTR::has_key)
       .method("nth", &MAPRPTR::nth)
       .method("insert", &MAPRPTR::insert)
+      .method("assign", &MAPRPTR::assign)
       .method("erase", &MAPRPTR::erase)
       .method("merge", &MAPRPTR::merge)
       .method("keys", &MAPRPTR::keys)
