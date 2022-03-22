@@ -4,8 +4,7 @@ NULL
 
 Rcpp::loadModule("maprModule", what = "MAPR")
 Rcpp::loadModule("maprptrModule", what = "MAPRPTR")
-Rcpp::loadModule("umaprModule", what = "uMAPR")
-Rcpp::loadModule("umaprptrModule", what = "uMAPRPTR")
+
 
 #' @title R6 class representing a map
 #'

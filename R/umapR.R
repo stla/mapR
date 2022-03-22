@@ -1,4 +1,6 @@
-#' @title R6 class representing a map
+Rcpp::loadModule("umaprModule", what = "uMAPR")
+
+#' @title R6 class representing a umap
 #'
 #' @description A map is given by keys and values.
 #'
@@ -10,7 +12,7 @@ umapR <- R6Class(
   "umapR",
   
   private = list(
-    .ptr = NULL,
+    # .ptr = NULL,
     .map = NULL
   ),
   
@@ -59,9 +61,9 @@ umapR <- R6Class(
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
       }
-      ptr <- new(uMAPR, keys, values)$ptr
-      private[[".ptr"]] <- ptr
-      private[[".map"]] <- new(uMAPRPTR, ptr)
+      UMAPR <- new(uMAPR, keys, values)
+      private[[".map"]] <- UMAPR
+      # private[[".ptr"]] <- UMAPR$ptr
     },
     
     #' @description Show instance of a \code{mapR} object.
@@ -307,12 +309,12 @@ umapR <- R6Class(
         splt <- split(values, keys)
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
-        ptr <- new(uMAPR, keys, values)$ptr
-        private[[".ptr"]] <- ptr
-        private[[".map"]] <- new(uMAPRPTR, ptr)
+        UMAPR <- new(uMAPR, keys, values)
+        # private[[".ptr"]] <- UMAPR$ptr
+        private[[".map"]] <- UMAPR
       }else{
-        map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
-        private[[".map"]]$merge(map2)
+        .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
+        private[[".map"]]$merge(.map2$ptr)
       }
     }
     
