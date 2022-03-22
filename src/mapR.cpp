@@ -53,6 +53,16 @@ class MAPRPTR {
     }
   }
 
+   unsigned index(std::string key) {
+     mapR map = *mapPTR;
+     mapR::iterator it = map.find(key);
+     if(it != map.end()) {
+       return map.index_of(it) + 1;
+     } else {
+       return 0;
+     }
+   }
+   
   bool has_key(std::string key) {
     mapR map = *mapPTR;
     return map.contains(key);
@@ -110,6 +120,14 @@ class MAPRPTR {
     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
   }
 
+   void merase(std::vector<std::string> keys) {
+     mapR map = *mapPTR;
+     for(std::string key : keys){
+       map.erase(key);
+     }
+     mapPTR = Rcpp::XPtr<mapR>(new mapR(map));
+   }
+   
   void merge(Rcpp::XPtr<mapR> map) {
     mapR map1 = *mapPTR;
     mapR map2 = *map;
@@ -127,11 +145,13 @@ RCPP_MODULE(maprptrModule) {
       .constructor<Rcpp::XPtr<mapR>>()
       .method("size", &MAPRPTR::size)
       .method("at", &MAPRPTR::at)
+      .method("index", &MAPRPTR::index)
       .method("has_key", &MAPRPTR::has_key)
       .method("nth", &MAPRPTR::nth)
       .method("insert", &MAPRPTR::insert)
       .method("assign", &MAPRPTR::assign)
       .method("erase", &MAPRPTR::erase)
+      .method("merase", &MAPRPTR::merase)
       .method("merge", &MAPRPTR::merge)
       .method("keys", &MAPRPTR::keys)
       .method("values", &MAPRPTR::values);

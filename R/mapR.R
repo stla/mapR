@@ -88,14 +88,18 @@ mapR <- R6Class(
     #' @param ... ignored
     print = function(...) {
       size <- self$size()
-      keys <- sprintf('"%s"', self$keys())
-      values <- vapply(self$values(), toString, character(1L))
-      s <- ifelse(size > 1L, "s", "")
-      cat(sprintf("`mapR` containing %d item%s:\n\n", size, s))
-      lines <- paste0("  ", keys, " -> ", values)
-      cat(lines, sep = "\n")
+      if(size == 0L){
+        cat("empty `mapR`")
+      }else{
+        keys <- sprintf('"%s"', self$keys())
+        values <- vapply(self$values(), toString, character(1L))
+        s <- ifelse(size > 1L, "s", "")
+        cat(sprintf("`mapR` containing %d item%s:\n\n", size, s))
+        lines <- paste0("  ", keys, " -> ", values)
+        cat(lines, sep = "\n")
+      }
     },
-
+    
     #' @description Size of the map.
     #'
     #' @return An integer, the number of entries.
@@ -121,7 +125,7 @@ mapR <- R6Class(
     keys = function(){
       private[[".map"]]$keys()
     },
-
+    
     #' @description Get all values.
     #'
     #' @return The values, a list of numeric vectors.
@@ -134,7 +138,7 @@ mapR <- R6Class(
     values = function(){
       private[[".map"]]$values()
     },
-
+    
     #' @description Get all entries.
     #'
     #' @return The entries in a dataframe.
@@ -192,7 +196,29 @@ mapR <- R6Class(
         })
       }
     },
-
+    
+    #' @description Returns the index of the given key.
+    #'
+    #' @param key a key (string)
+    #'
+    #' @return The index of the key, or \code{NA} if it is not found.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' )
+    #' map$index("b")
+    #' map$index("x")
+    index = function(key){
+      stopifnot(isString(key))
+      i <- private[[".map"]]$index(key)
+      if(i == 0L){
+        NA_integer_
+      }else{
+        i
+      }
+    },
+    
     #' @description Checks whether a key exists.
     #'
     #' @param key a string
@@ -209,7 +235,7 @@ mapR <- R6Class(
       stopifnot(isString(key))
       private[[".map"]]$has_key(key)
     },
-
+    
     #' @description Returns the n-th entry.
     #'
     #' @param n a positive integer
@@ -266,23 +292,30 @@ mapR <- R6Class(
       }
     },
     
-    #' @description Erase an entry.
+    #' @description Erase some entries.
     #'
-    #' @param key a key
+    #' @param keys some keys, a character vector
     #'
     #' @return Nothing, this updates the map.
     #'
     #' @examples
     #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #'   keys = c("a", "b", "c"), 
+    #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
     #' map$erase("a")
     #' map
-    erase = function(key){
-      stopifnot(isString(key))
-      private[[".map"]]$erase(key)
+    #' map$erase(c("b", "c"))
+    #' map
+    erase = function(keys){
+      stopifnot(isCharacterVector(keys))
+      if(length(keys) == 1L){
+        private[[".map"]]$erase(keys)
+      }else{
+        private[[".map"]]$merase(keys)
+      }
     },
-
+    
     #' @description Merge with another map.
     #'
     #' @param map a \code{mapR} object

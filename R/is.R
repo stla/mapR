@@ -6,6 +6,10 @@ isNumericVector <- function(x){
   is.atomic(x) && is.numeric(x) && !any(is.na(x))
 }
 
+isCharacterVector <- function(x){
+  is.atomic(x) && is.character(x) && length(x) > 0L && !any(is.na(x))
+}
+
 isPositiveInteger <- function(x){
   is.atomic(x) && is.numeric(x) && length(x) == 1L && !is.na(x) && floor(x) == x
 }

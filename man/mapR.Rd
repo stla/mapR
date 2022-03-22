@@ -81,6 +81,16 @@ map$at("b")
 map$at("x", stop_if_not_found = FALSE)
 
 ## ------------------------------------------------
+## Method `mapR$index`
+## ------------------------------------------------
+
+map <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map$index("b")
+map$index("x")
+
+## ------------------------------------------------
 ## Method `mapR$has_key`
 ## ------------------------------------------------
 
@@ -119,9 +129,12 @@ map
 ## ------------------------------------------------
 
 map <- mapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
 map$erase("a")
+map
+map$erase(c("b", "c"))
 map
 
 ## ------------------------------------------------
@@ -164,6 +177,7 @@ map1
 \item \href{#method-items}{\code{mapR$items()}}
 \item \href{#method-toList}{\code{mapR$toList()}}
 \item \href{#method-at}{\code{mapR$at()}}
+\item \href{#method-index}{\code{mapR$index()}}
 \item \href{#method-has_key}{\code{mapR$has_key()}}
 \item \href{#method-nth}{\code{mapR$nth()}}
 \item \href{#method-insert}{\code{mapR$insert()}}
@@ -389,6 +403,38 @@ map$at("x", stop_if_not_found = FALSE)
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-index"></a>}}
+\if{latex}{\out{\hypertarget{method-index}{}}}
+\subsection{Method \code{index()}}{
+Returns the index of the given key.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{mapR$index(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{a key (string)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The index of the key, or \code{NA} if it is not found.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{map <- mapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map$index("b")
+map$index("x")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-has_key"></a>}}
 \if{latex}{\out{\hypertarget{method-has_key}{}}}
 \subsection{Method \code{has_key()}}{
@@ -500,15 +546,15 @@ map
 \if{html}{\out{<a id="method-erase"></a>}}
 \if{latex}{\out{\hypertarget{method-erase}{}}}
 \subsection{Method \code{erase()}}{
-Erase an entry.
+Erase some entries.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{mapR$erase(key)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{mapR$erase(keys)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{a key}
+\item{\code{keys}}{some keys, a character vector}
 }
 \if{html}{\out{</div>}}
 }
@@ -518,9 +564,12 @@ Nothing, this updates the map.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{map <- mapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
 map$erase("a")
+map
+map$erase(c("b", "c"))
 map
 }
 \if{html}{\out{</div>}}
