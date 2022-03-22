@@ -12,11 +12,15 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 
 RcppExport SEXP _rcpp_module_boot_maprModule();
+RcppExport SEXP _rcpp_module_boot_umaprModule();
 RcppExport SEXP _rcpp_module_boot_maprptrModule();
+RcppExport SEXP _rcpp_module_boot_umaprptrModule();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_maprModule", (DL_FUNC) &_rcpp_module_boot_maprModule, 0},
+    {"_rcpp_module_boot_umaprModule", (DL_FUNC) &_rcpp_module_boot_umaprModule, 0},
     {"_rcpp_module_boot_maprptrModule", (DL_FUNC) &_rcpp_module_boot_maprptrModule, 0},
+    {"_rcpp_module_boot_umaprptrModule", (DL_FUNC) &_rcpp_module_boot_umaprptrModule, 0},
     {NULL, NULL, 0}
 };
 

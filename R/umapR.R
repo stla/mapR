@@ -1,12 +1,3 @@
-#' @useDynLib mapR, .registration=TRUE
-#' @importFrom Rcpp evalCpp  
-NULL
-
-Rcpp::loadModule("maprModule", what = "MAPR")
-Rcpp::loadModule("maprptrModule", what = "MAPRPTR")
-Rcpp::loadModule("umaprModule", what = "uMAPR")
-Rcpp::loadModule("umaprptrModule", what = "uMAPRPTR")
-
 #' @title R6 class representing a map
 #'
 #' @description A map is given by keys and values.
@@ -14,34 +5,18 @@ Rcpp::loadModule("umaprptrModule", what = "uMAPRPTR")
 #' @export
 #' @importFrom R6 R6Class
 #' @importFrom methods new
-mapR <- R6Class(
+umapR <- R6Class(
   
-  "mapR",
+  "umapR",
   
   private = list(
     .ptr = NULL,
     .map = NULL
   ),
   
-  # active = list(
-  #   center = function(value) {
-  #     if (missing(value)) {
-  #       private[[".center"]]
-  #     } else {
-  #       center <- as.vector(value)
-  #       stopifnot(
-  #         is.numeric(center),
-  #         length(center) == 2L,
-  #         !any(is.na(center))
-  #       )
-  #       private[[".center"]] <- center
-  #     }
-  #   }
-  # ),
-  
   public = list(
     
-    #' @description Creates a new \code{mapR} object.
+    #' @description Creates a new \code{umapR} object.
     #'
     #' @param keys keys, a character vector
     #' @param values values, a list of numeric vectors; \code{keys} and 
@@ -52,14 +27,14 @@ mapR <- R6Class(
     #' @return A \code{mapR} object.
     #'
     #' @examples
-    #' mapR$new(
+    #' umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' mapR$new(
+    #' umapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6))
     #' )
-    #' mapR$new(
+    #' umapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   join = TRUE
@@ -84,9 +59,9 @@ mapR <- R6Class(
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
       }
-      ptr <- new(MAPR, keys, values)$ptr#mapPointer()
+      ptr <- new(uMAPR, keys, values)$ptr
       private[[".ptr"]] <- ptr
-      private[[".map"]] <- new(MAPRPTR, ptr)
+      private[[".map"]] <- new(uMAPRPTR, ptr)
     },
     
     #' @description Show instance of a \code{mapR} object.
@@ -94,12 +69,12 @@ mapR <- R6Class(
     print = function(...) {
       size <- self$size()
       if(size == 0L){
-        cat("empty `mapR`")
+        cat("empty `umapR`")
       }else{
         keys <- sprintf('"%s"', self$keys())
         values <- vapply(self$values(), toString, character(1L))
         s <- ifelse(size > 1L, "s", "")
-        cat(sprintf("`mapR` containing %d item%s:\n\n", size, s))
+        cat(sprintf("`umapR` containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
         cat(lines, sep = "\n")
       }
@@ -110,7 +85,7 @@ mapR <- R6Class(
     #' @return An integer, the number of entries.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$size()
@@ -123,7 +98,7 @@ mapR <- R6Class(
     #' @return The keys, a character vector.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$keys()
@@ -136,7 +111,7 @@ mapR <- R6Class(
     #' @return The values, a list of numeric vectors.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$values()
@@ -149,7 +124,7 @@ mapR <- R6Class(
     #' @return The entries in a dataframe.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$items()
@@ -164,7 +139,7 @@ mapR <- R6Class(
     #' @return A named list.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$toList()
@@ -184,7 +159,7 @@ mapR <- R6Class(
     #' @return The value corresponding to the key, a numeric vector.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
@@ -209,7 +184,7 @@ mapR <- R6Class(
     #' @return The index of the key, or \code{NA} if it is not found.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$index("b")
@@ -232,7 +207,7 @@ mapR <- R6Class(
     #' @return A \code{mapR} object.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b", "c"), 
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
@@ -241,7 +216,7 @@ mapR <- R6Class(
       stopifnot(isCharacterVector(keys))
       keys <- intersect(keys, self$keys())
       lst <- self$toList()
-      mapR$new(keys, lst[keys], checks = FALSE) 
+      umapR$new(keys, lst[keys], checks = FALSE) 
     },
     
     #' @description Checks whether a key exists in a map.
@@ -251,7 +226,7 @@ mapR <- R6Class(
     #' @return A Boolean value.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$has_key("b")
@@ -259,33 +234,6 @@ mapR <- R6Class(
     has_key = function(key){
       stopifnot(isString(key))
       private[[".map"]]$has_key(key)
-    },
-    
-    #' @description Returns the n-th entry of the map.
-    #'
-    #' @param n index, a positive integer
-    #' @param stop_if_too_large a Boolean value, whether to stop if \code{n}
-    #'   is too large, or to return \code{NaN}
-    #'
-    #' @return A list with the key and the value at index \code{n}.
-    #'
-    #' @examples
-    #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-    #' )
-    #' map$nth(2)
-    #' map$nth(9, stop_if_too_large = FALSE)
-    nth = function(n, stop_if_too_large = TRUE){
-      stopifnot(isPositiveInteger(n))
-      if(stop_if_too_large){
-        private[[".map"]]$nth(as.integer(n) - 1L)
-      }else{
-        tryCatch({
-          private[[".map"]]$nth(as.integer(n) - 1L)
-        }, error = function(e){
-          NaN
-        })
-      }
     },
     
     #' @description Insert a new entry.
@@ -298,7 +246,7 @@ mapR <- R6Class(
     #' @return Nothing, this updates the map.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$insert("c", c(6, 7))
@@ -324,7 +272,7 @@ mapR <- R6Class(
     #' @return Nothing, this updates the map.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- umapR$new(
     #'   keys = c("a", "b", "c"), 
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
@@ -350,40 +298,40 @@ mapR <- R6Class(
     #' @return Nothing, this updates the reference map.
     #'
     #' @examples
-    #' map1 <- mapR$new(
+    #' map1 <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map2 <- mapR$new(
+    #' map2 <- umapR$new(
     #'   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
     #' )
     #' map1$merge(map2)
     #' map1
     #' 
     #' # `join` example ####
-    #' map1 <- mapR$new(
+    #' map1 <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map2 <- mapR$new(
+    #' map2 <- umapR$new(
     #'   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
     #' )
     #' map1$merge(map2, join = FALSE)
     #' map1
     #' 
-    #' map1 <- mapR$new(
+    #' map1 <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map1$merge(map2, join = TRUE)
     #' map1
     merge = function(map, join = FALSE){
-      stopifnot(inherits(map, "mapR"))
+      stopifnot(inherits(map, "umapR"))
       if(join && anyDuplicated(keys <- c(self$keys(), map$keys()))){
         values <- c(self$values(), map$values())
         splt <- split(values, keys)
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
-        ptr <- new(MAPR, keys, values)$ptr#mapPointer()
+        ptr <- new(uMAPR, keys, values)$ptr
         private[[".ptr"]] <- ptr
-        private[[".map"]] <- new(MAPRPTR, ptr)
+        private[[".map"]] <- new(uMAPRPTR, ptr)
       }else{
         map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
         private[[".map"]]$merge(map2)
