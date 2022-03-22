@@ -177,28 +177,6 @@ umapR <- R6Class(
       }
     },
     
-    #' @description Returns the index of the given key.
-    #'
-    #' @param key a key (string)
-    #'
-    #' @return The index of the key, or \code{NA} if it is not found.
-    #'
-    #' @examples
-    #' map <- umapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-    #' )
-    #' map$index("b")
-    #' map$index("x")
-    index = function(key){
-      stopifnot(isString(key))
-      i <- private[[".map"]]$index(key)
-      if(i == 0L){
-        NA_integer_
-      }else{
-        i
-      }
-    },
-    
     #' @description Extract submap.
     #'
     #' @param keys some keys, a character vector; those which do not belong to 

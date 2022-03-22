@@ -227,10 +227,31 @@ public:
       Rcpp::stop("Key not found.");
     }
   }
+
+  // unsigned index(std::string key) {
+  //   umapR::iterator it = umap.find(key);
+  //   if(it != umap.end()) {
+  //     return umap.index_of(it) + 1;
+  //   } else {
+  //     return 0;
+  //   }
+  // }
   
   bool has_key(std::string key) {
     return umap.find(key) != umap.end();
   }
+  
+  // Rcpp::List nth(const unsigned i) {
+  //   const unsigned s = umap.size();
+  //   if(i >= s) {
+  //     Rcpp::stop("Index too large.");
+  //   }
+  //   umapR::iterator it = umap.nth(i);
+  //   std::string key = it->first;
+  //   std::vector<double> value = it->second;
+  //   return Rcpp::List::create(Rcpp::Named("key") = key,
+  //                             Rcpp::Named("value") = value);
+  // }
   
   std::vector<std::string> keys() {
     std::vector<std::string> out(0);

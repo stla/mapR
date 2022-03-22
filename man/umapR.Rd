@@ -81,16 +81,6 @@ map$at("b")
 map$at("x", stop_if_not_found = FALSE)
 
 ## ------------------------------------------------
-## Method `umapR$index`
-## ------------------------------------------------
-
-map <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map$index("b")
-map$index("x")
-
-## ------------------------------------------------
 ## Method `umapR$submap`
 ## ------------------------------------------------
 
@@ -177,7 +167,6 @@ map1
 \item \href{#method-items}{\code{umapR$items()}}
 \item \href{#method-toList}{\code{umapR$toList()}}
 \item \href{#method-at}{\code{umapR$at()}}
-\item \href{#method-index}{\code{umapR$index()}}
 \item \href{#method-submap}{\code{umapR$submap()}}
 \item \href{#method-has_key}{\code{umapR$has_key()}}
 \item \href{#method-insert}{\code{umapR$insert()}}
@@ -398,38 +387,6 @@ The value corresponding to the key, a numeric vector.
 )
 map$at("b")
 map$at("x", stop_if_not_found = FALSE)
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-index"></a>}}
-\if{latex}{\out{\hypertarget{method-index}{}}}
-\subsection{Method \code{index()}}{
-Returns the index of the given key.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$index(key)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{a key (string)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The index of the key, or \code{NA} if it is not found.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{map <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map$index("b")
-map$index("x")
 }
 \if{html}{\out{</div>}}
 
