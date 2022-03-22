@@ -219,6 +219,26 @@ mapR <- R6Class(
       }
     },
     
+    #' @description Extract submap.
+    #'
+    #' @param keys some keys, a character vector; those which do not belong to 
+    #'   the keys of the reference map will be ignored
+    #'
+    #' @return A \code{mapR} object.
+    #'
+    #' @examples
+    #' map <- mapR$new(
+    #'   keys = c("a", "b", "c"), 
+    #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+    #' )
+    #' map$submap(c("a", "c"))
+    submap = function(keys){
+      stopifnot(isCharacterVector(keys))
+      keys <- intersect(keys, self$keys())
+      lst <- self$toList()
+      mapR$new(keys, lst[keys])
+    },
+    
     #' @description Checks whether a key exists.
     #'
     #' @param key a string

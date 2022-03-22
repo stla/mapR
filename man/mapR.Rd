@@ -91,6 +91,16 @@ map$index("b")
 map$index("x")
 
 ## ------------------------------------------------
+## Method `mapR$submap`
+## ------------------------------------------------
+
+map <- mapR$new(
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+)
+map$submap(c("a", "c"))
+
+## ------------------------------------------------
 ## Method `mapR$has_key`
 ## ------------------------------------------------
 
@@ -178,6 +188,7 @@ map1
 \item \href{#method-toList}{\code{mapR$toList()}}
 \item \href{#method-at}{\code{mapR$at()}}
 \item \href{#method-index}{\code{mapR$index()}}
+\item \href{#method-submap}{\code{mapR$submap()}}
 \item \href{#method-has_key}{\code{mapR$has_key()}}
 \item \href{#method-nth}{\code{mapR$nth()}}
 \item \href{#method-insert}{\code{mapR$insert()}}
@@ -428,6 +439,39 @@ The index of the key, or \code{NA} if it is not found.
 )
 map$index("b")
 map$index("x")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-submap"></a>}}
+\if{latex}{\out{\hypertarget{method-submap}{}}}
+\subsection{Method \code{submap()}}{
+Extract submap.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{mapR$submap(keys)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{keys}}{some keys, a character vector; those which do not belong to 
+the keys of the reference map will be ignored}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{mapR} object.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{map <- mapR$new(
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+)
+map$submap(c("a", "c"))
 }
 \if{html}{\out{</div>}}
 
