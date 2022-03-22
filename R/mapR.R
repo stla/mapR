@@ -239,9 +239,9 @@ mapR <- R6Class(
       mapR$new(keys, lst[keys])
     },
     
-    #' @description Checks whether a key exists.
+    #' @description Checks whether a key exists in a map.
     #'
-    #' @param key a string
+    #' @param key a key (string)
     #'
     #' @return A Boolean value.
     #'
@@ -256,9 +256,9 @@ mapR <- R6Class(
       private[[".map"]]$has_key(key)
     },
     
-    #' @description Returns the n-th entry.
+    #' @description Returns the n-th entry of the map.
     #'
-    #' @param n a positive integer
+    #' @param n index, a positive integer
     #' @param stop_if_too_large a Boolean value, whether to stop if \code{n}
     #'   is too large, or to return \code{NaN}
     #'

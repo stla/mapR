@@ -482,7 +482,7 @@ map$submap(c("a", "c"))
 \if{html}{\out{<a id="method-has_key"></a>}}
 \if{latex}{\out{\hypertarget{method-has_key}{}}}
 \subsection{Method \code{has_key()}}{
-Checks whether a key exists.
+Checks whether a key exists in a map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{mapR$has_key(key)}\if{html}{\out{</div>}}
 }
@@ -490,7 +490,7 @@ Checks whether a key exists.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{key}}{a string}
+\item{\code{key}}{a key (string)}
 }
 \if{html}{\out{</div>}}
 }
@@ -514,7 +514,7 @@ map$has_key("x")
 \if{html}{\out{<a id="method-nth"></a>}}
 \if{latex}{\out{\hypertarget{method-nth}{}}}
 \subsection{Method \code{nth()}}{
-Returns the n-th entry.
+Returns the n-th entry of the map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{mapR$nth(n, stop_if_too_large = TRUE)}\if{html}{\out{</div>}}
 }
@@ -522,7 +522,7 @@ Returns the n-th entry.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{n}}{a positive integer}
+\item{\code{n}}{index, a positive integer}
 
 \item{\code{stop_if_too_large}}{a Boolean value, whether to stop if \code{n}
 is too large, or to return \code{NaN}}
