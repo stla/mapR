@@ -1,4 +1,4 @@
-Rcpp::loadModule("umaprModule", what = "uMAPR")
+#Rcpp::loadModule("umaprModule", what = "uMAPR")
 
 #' @title R6 class representing a umap
 #'
@@ -74,7 +74,7 @@ umapR <- R6Class(
           keys <- make.unique2(keys)
         }
       }
-      UMAPR <- new(uMAPR, keys, values)
+      UMAPR <- new("uMAPR", keys, values)
       private[[".map"]] <- UMAPR
       # private[[".ptr"]] <- UMAPR$ptr
     },

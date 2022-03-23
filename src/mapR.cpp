@@ -1,10 +1,6 @@
-// [[Rcpp::depends(BH)]]
-#include <Rcpp.h>
-#include <boost/container/flat_map.hpp>
-#include <boost/unordered_map.hpp>
-
-typedef boost::container::flat_map<std::string, std::vector<double>> mapR;
-typedef boost::unordered::unordered_map<std::string, SEXP> umapR;
+#ifndef _MAPRHEADER_
+#include "mapR.h"
+#endif
 
 // Rcpp::XPtr<mapR> mapPointer(std::vector<std::string> keys, Rcpp::List values)
 // {
@@ -30,14 +26,8 @@ mapR mapNew(std::vector<std::string> keys, Rcpp::List values) {
   // return ptr;
 }
 
-umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
-  umapR umap;
-  for(size_t i = 0; i < keys.size(); i++) {
-    SEXP v = values[i];
-    umap.emplace(keys[i], v);
-  }
-  return umap;
-}
+
+//#include "uMAPR.h"
 
 class MAPR {
   std::vector<std::string> keys;
@@ -56,76 +46,6 @@ class MAPR {
   //  Rcpp::List values;
 };
 
-class uMAPR {
-  // std::vector<std::string> keys;
-  // Rcpp::List values;
-  umapR umap;
-
- public:
-  uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
-      : umap(umapNew(keys_, values_)), ptr(Rcpp::XPtr<umapR>(new umapR(umap))) {}
-
-  Rcpp::XPtr<umapR> ptr;
-
-  unsigned size() { return umap.size(); }
-
-  SEXP at(std::string key) {
-    umapR::iterator it = umap.find(key);
-    if(it != umap.end()) {
-      return it->second;
-    } else {
-      Rcpp::stop("Key not found.");
-    }
-  }
-
-  bool has_key(std::string key) { return umap.find(key) != umap.end(); }
-
-  Rcpp::StringVector keys() {
-    Rcpp::StringVector out(0);
-    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
-      out.push_back(it->first);
-    }
-    return out;
-  }
-
-  Rcpp::List values() {
-    const unsigned s = umap.size();
-    Rcpp::List out(s);
-    unsigned i = 0;
-    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
-      out(i) = it->second;
-      i++;
-    }
-    return out;
-  }
-
-  void insert(std::string key, SEXP value) {
-    umap.emplace(key, value);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
-  }
-
-  void assign(std::string key, SEXP value) {
-    umap.insert_or_assign(key, value);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
-  }
-
-  void erase(std::string key) {
-    umap.erase(key);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
-  }
-
-  void merase(Rcpp::StringVector keys) {
-    for(Rcpp::String key : keys) {
-      umap.erase(key);
-    }
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
-  }
-
-  void merge(Rcpp::XPtr<umapR> umap2) {
-    umap.merge(*umap2);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
-  }
-};
 
 RCPP_MODULE(maprModule) {
   using namespace Rcpp;
@@ -135,22 +55,22 @@ RCPP_MODULE(maprModule) {
   // .method("mapPointer", &MAPR::toMAPR);
 }
 
-RCPP_MODULE(umaprModule) {
-  using namespace Rcpp;
-  class_<uMAPR>("uMAPR")
-      .constructor<Rcpp::StringVector, Rcpp::List>()
-      .field_readonly("ptr", &uMAPR::ptr)
-      .method("size", &uMAPR::size)
-      .method("at", &uMAPR::at)
-      .method("has_key", &uMAPR::has_key)
-      .method("insert", &uMAPR::insert)
-      .method("assign", &uMAPR::assign)
-      .method("erase", &uMAPR::erase)
-      .method("merase", &uMAPR::merase)
-      .method("merge", &uMAPR::merge)
-      .method("keys", &uMAPR::keys)
-      .method("values", &uMAPR::values);
-}
+// RCPP_MODULE(umaprModule) {
+//   using namespace Rcpp;
+//   class_<uMAPR>("uMAPR")
+//       .constructor<Rcpp::StringVector, Rcpp::List>()
+//       .field_readonly("ptr", &uMAPR::ptr)
+//       .method("size", &uMAPR::size)
+//       .method("at", &uMAPR::at)
+//       .method("has_key", &uMAPR::has_key)
+//       .method("insert", &uMAPR::insert)
+//       .method("assign", &uMAPR::assign)
+//       .method("erase", &uMAPR::erase)
+//       .method("merase", &uMAPR::merase)
+//       .method("merge", &uMAPR::merge)
+//       .method("keys", &uMAPR::keys)
+//       .method("values", &uMAPR::values);
+// }
 
 class MAPRPTR {
   Rcpp::XPtr<mapR> mapPTR;

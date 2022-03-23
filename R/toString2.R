@@ -1,5 +1,5 @@
 isVectorType <- function(x){
-  x %in% c("logical", "integer", "double", "complex", "character")
+  x %in% c("logical", "integer", "double", "complex", "character", "NULL")
 }
 
 #' @importFrom R6 is.R6 is.R6Class
@@ -54,7 +54,14 @@ class2 <- function(x){
       if(is.pairlist(x)){
         "pairlist"
       }else{
-        "list"
+        types <- vapply(x, typeof, character(1L))
+        nulls <- vapply(x, is.null, logical(1L))
+        dims <- vapply(x, function(e) length(dim(e)), integer(1L))
+        if(all(isVectorType(types) | nulls) && all(dims == 0L)){
+          `attr<-`("list", "toString", TRUE)
+        }else{
+          "list"
+        }
       }
     }else if(isS4(x)){
       sprintf("S4 (%s)", class(x)[1L])
@@ -77,6 +84,8 @@ toString2 <- function(x){
   cls <- class2(x)
   if(isTRUE(attr(cls, "toString"))){
     paste0(cls, ": ", toString(x, width = 40L))
+  }else if(cls == "list"){
+    paste0("list: ", toString(vapply(x, class2, character(1L)), width = 40L))
   }else{
     cls
   }

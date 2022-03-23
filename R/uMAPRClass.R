@@ -1,0 +1,1 @@
+uMAPR <- Rcpp::setRcppClass("uMAPR")
