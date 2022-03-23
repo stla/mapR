@@ -7,17 +7,21 @@ class2 <- function(x){
     if(ldim == 0L){
       if(is.null(x)){
         "NULL"
-      }else if(is.factor(x)){
-        "factor"
       }else{
-        if(!inherits(x, type)){ # e.g. gmp::bigq, jsonlite::json 
-          type <- class(x)[1L]
-        }
-        if(length(x) >= 2L){
-          paste0(type, " vector")
+        out <- if(is.factor(x)){
+          "factor"
         }else{
-          type
+          if(!inherits(x, type)){ # e.g. gmp::bigq, jsonlite::json 
+            type <- class(x)[1L]
+          }
+          if(length(x) >= 2L){
+            paste0(type, " vector")
+          }else{
+            type
+          }
         }
+        attr(out, "toString") <- TRUE
+        out
       }
     }else{
       if(ldim == 2L){
@@ -60,5 +64,14 @@ class2 <- function(x){
     }else{
       typeof(x)
     }
+  }
+}
+
+toString2 <- function(x){
+  cls <- class2(x)
+  if(isTRUE(attr(cls, "toString"))){
+    paste0(cls, ": ", toString(x, width = 40L))
+  }else{
+    cls
   }
 }

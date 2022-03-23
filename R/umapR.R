@@ -74,7 +74,7 @@ umapR <- R6Class(
         cat("empty `umapR`")
       }else{
         keys <- sprintf('"%s"', self$keys())
-        values <- vapply(self$values(), toString, character(1L))
+        values <- vapply(self$values(), toString2, character(1L))
         s <- ifelse(size > 1L, "s", "")
         cat(sprintf("`umapR` containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
