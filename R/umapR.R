@@ -1,8 +1,9 @@
 #Rcpp::loadModule("umaprModule", what = "uMAPR")
 
-#' @title R6 class representing a umap
+#' @title R6 class representing an unordered map.
 #'
-#' @description A map is given by keys and values.
+#' @description A map is given by keys and values. The keys must be 
+#'   some strings, the values can be any R objects.
 #'
 #' @export
 #' @importFrom R6 R6Class
@@ -10,6 +11,10 @@
 umapR <- R6Class(
   
   "umapR",
+  
+  lock_class = TRUE,
+  
+  cloneable = FALSE,
   
   private = list(
     # .ptr = NULL,
@@ -20,19 +25,21 @@ umapR <- R6Class(
     
     #' @description Creates a new \code{umapR} object.
     #'
-    #' @param keys keys, a character vector
-    #' @param values values, a list of numeric vectors; \code{keys} and 
+    #' @param keys the keys, a character vector without \code{NA} value
+    #' @param values the values, a list of R objects; \code{keys} and 
     #'   \code{values} must have the same length
     #' @param duplicated the action to perform for duplicated keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
     #'
-    #' @return A \code{mapR} object.
+    #' @return A \code{umapR} object.
     #'
     #' @examples
     #' umapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #'   keys = c("a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4, 5))
     #' )
+    #' # examples with duplicated keys:
     #' umapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6))
@@ -63,7 +70,7 @@ umapR <- R6Class(
         #   stop("The values must be given as a list of numeric vectors.")
         # }
       }
-      if(anyDuplicated(keys) && duplicated != "drop"){
+      if(duplicated != "drop" && anyDuplicated(keys)){
         if(duplicated == "join"){
           splt <- split(values, keys)
           values <- lapply(splt, function(x){
@@ -123,7 +130,7 @@ umapR <- R6Class(
     
     #' @description Get all values.
     #'
-    #' @return The values, a list of numeric vectors.
+    #' @return The values, a list of R objects.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -145,8 +152,9 @@ umapR <- R6Class(
     #' map$items()
     items = function(){
       keys <- self$keys()
+      o <- order(keys)
       values <- self$values()
-      data.frame(key = keys, value = I(values))
+      data.frame(key = keys[o], value = I(values[o]))
     },
     
     #' @description Converts the map to a list.
@@ -160,8 +168,9 @@ umapR <- R6Class(
     #' map$toList()
     toList = function(){
       keys <- self$keys()
-      values <- self$values()
-      names(values) <- keys
+      o <- order(keys)
+      values <- self$values()[o]
+      names(values) <- keys[o]
       values
     },
     
@@ -171,7 +180,7 @@ umapR <- R6Class(
     #' @param stop_if_not_found a Boolean value, whether to stop if the key 
     #'   is not found, or to return \code{NaN}
     #'
-    #' @return The value corresponding to the key, a numeric vector.
+    #' @return The value corresponding to the key, an R object.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -197,7 +206,7 @@ umapR <- R6Class(
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
     #'
-    #' @return A \code{mapR} object.
+    #' @return A \code{umapR} object.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -232,7 +241,7 @@ umapR <- R6Class(
     #' @description Insert a new entry.
     #'
     #' @param key a key (string)
-    #' @param value a value (numeric vector)
+    #' @param value a value (R object)
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
@@ -250,7 +259,6 @@ umapR <- R6Class(
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
-      stopifnot(isNumericVector(value))
       if(replace){
         private[[".map"]]$assign(key, value)
       }else{
@@ -284,9 +292,10 @@ umapR <- R6Class(
     
     #' @description Merge with another map.
     #'
-    #' @param map a \code{mapR} object
-    #' @param join Boolean, whether to join the values if the reference map 
-    #'   and \code{map} have some identical keys
+    #' @param map a \code{umapR} object
+    #' @param duplicated the action to perform if the reference map 
+    #'   and \code{map} have some identical keys, one of 
+    #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #'
     #' @return Nothing, this updates the reference map.
     #'
@@ -300,35 +309,68 @@ umapR <- R6Class(
     #' map1$merge(map2)
     #' map1
     #' 
-    #' # `join` example ####
+    #' # `duplicated` example ####
     #' map1 <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
+    #' map1_copy1 <- map1$copy()
+    #' map1_copy2 <- map1$copy()
+    #' map1_copy3 <- map1$copy()
     #' map2 <- umapR$new(
     #'   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
     #' )
-    #' map1$merge(map2, join = FALSE)
-    #' map1
+    #' map1_copy1$merge(map2)
+    #' map1_copy1
     #' 
-    #' map1 <- umapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-    #' )
-    #' map1$merge(map2, join = TRUE)
-    #' map1
-    merge = function(map, join = FALSE){
+    #' map1_copy2$merge(map2, duplicated = "join")
+    #' map1_copy2
+    #' 
+    #' map1_copy3$merge(map2, duplicated = "separate")
+    #' map1_copy3
+    merge = function(map, duplicated = "drop"){
       stopifnot(inherits(map, "umapR"))
-      if(join && anyDuplicated(keys <- c(self$keys(), map$keys()))){
-        values <- c(self$values(), map$values())
-        splt <- split(values, keys)
-        values <- lapply(splt, function(x) do.call(c, x))
-        keys <- names(values)
-        UMAPR <- new("uMAPR", keys, values)
-        # private[[".ptr"]] <- UMAPR$ptr
-        private[[".map"]] <- UMAPR
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+      if(duplicated != "drop"){
+        keys1 <- self$keys()
+        keys2 <- map$keys()
+        if(length(intersect(keys1, keys2))){
+          keys <- c(keys1, keys2)
+          values <- c(self$values(), map$values())
+          if(duplicated == "join"){
+            splt <- split(values, keys)
+            values <- lapply(splt, function(x){
+              if(length(x) == 1L) x[[1L]] else x
+            })
+            keys <- names(values)
+          }else{ # duplicated == "separate"
+            keys <- make.unique2(keys)
+          }
+          UMAPR <- new("uMAPR", keys, values)
+          private[[".map"]] <- UMAPR
+        }else{
+          .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
+          private[[".map"]]$merge(.map2$ptr)
+        }
       }else{
         .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
         private[[".map"]]$merge(.map2$ptr)
       }
+    },
+    
+    #' @description Copy the reference map.
+    #'
+    #' @return A copy of the reference map.
+    #' 
+    #' @examples 
+    #' map <- umapR$new(c("a", "b"), list(c(1,2), c(FALSE, TRUE)))
+    #' true_copy <- map$copy()
+    #' true_copy$erase("a")
+    #' map
+    #' naive_copy <- map
+    #' naive_copy$erase("a")
+    #' map
+    copy = function(){
+      umapR$new(self$keys(), self$values(), checks = FALSE)
     }
     
   )

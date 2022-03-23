@@ -2,9 +2,10 @@
 % Please edit documentation in R/umapR.R
 \name{umapR}
 \alias{umapR}
-\title{R6 class representing a umap}
+\title{R6 class representing an unordered map.}
 \description{
-A map is given by keys and values.
+A map is given by keys and values. The keys must be 
+  some strings, the values can be any R objects.
 }
 \examples{
 
@@ -13,8 +14,10 @@ A map is given by keys and values.
 ## ------------------------------------------------
 
 umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+  keys = c("a", "b"), 
+  values = list(c(1, 2), c(3, 4, 5))
 )
+# examples with duplicated keys:
 umapR$new(
   keys = c("a", "a", "b"), 
   values = list(c(1, 2), c(3, 4), c(5, 6))
@@ -145,21 +148,36 @@ map2 <- umapR$new(
 map1$merge(map2)
 map1
 
-# `join` example ####
+# `duplicated` example ####
 map1 <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
+map1_copy1 <- map1$copy()
+map1_copy2 <- map1$copy()
+map1_copy3 <- map1$copy()
 map2 <- umapR$new(
   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
 )
-map1$merge(map2, join = FALSE)
-map1
+map1_copy1$merge(map2)
+map1_copy1
 
-map1 <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map1$merge(map2, join = TRUE)
-map1
+map1_copy2$merge(map2, duplicated = "join")
+map1_copy2
+
+map1_copy3$merge(map2, duplicated = "separate")
+map1_copy3
+
+## ------------------------------------------------
+## Method `umapR$copy`
+## ------------------------------------------------
+
+map <- umapR$new(c("a", "b"), list(c(1,2), c(FALSE, TRUE)))
+true_copy <- map$copy()
+true_copy$erase("a")
+map
+naive_copy <- map
+naive_copy$erase("a")
+map
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -177,7 +195,7 @@ map1
 \item \href{#method-insert}{\code{umapR$insert()}}
 \item \href{#method-erase}{\code{umapR$erase()}}
 \item \href{#method-merge}{\code{umapR$merge()}}
-\item \href{#method-clone}{\code{umapR$clone()}}
+\item \href{#method-copy}{\code{umapR$copy()}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -192,9 +210,9 @@ Creates a new \code{umapR} object.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{keys}}{keys, a character vector}
+\item{\code{keys}}{the keys, a character vector without \code{NA} value}
 
-\item{\code{values}}{values, a list of numeric vectors; \code{keys} and 
+\item{\code{values}}{the values, a list of R objects; \code{keys} and 
 \code{values} must have the same length}
 
 \item{\code{duplicated}}{the action to perform for duplicated keys, one of 
@@ -205,13 +223,15 @@ Creates a new \code{umapR} object.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \code{mapR} object.
+A \code{umapR} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+  keys = c("a", "b"), 
+  values = list(c(1, 2), c(3, 4, 5))
 )
+# examples with duplicated keys:
 umapR$new(
   keys = c("a", "a", "b"), 
   values = list(c(1, 2), c(3, 4), c(5, 6))
@@ -307,7 +327,7 @@ Get all values.
 }
 
 \subsection{Returns}{
-The values, a list of numeric vectors.
+The values, a list of R objects.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -389,7 +409,7 @@ is not found, or to return \code{NaN}}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The value corresponding to the key, a numeric vector.
+The value corresponding to the key, an R object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -422,7 +442,7 @@ the keys of the reference map will be ignored}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \code{mapR} object.
+A \code{umapR} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -483,7 +503,7 @@ Insert a new entry.
 \describe{
 \item{\code{key}}{a key (string)}
 
-\item{\code{value}}{a value (numeric vector)}
+\item{\code{value}}{a value (R object)}
 
 \item{\code{replace}}{Boolean, whether to replace the value if the key is 
 already present}
@@ -551,16 +571,17 @@ map
 \subsection{Method \code{merge()}}{
 Merge with another map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$merge(map, join = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$merge(map, duplicated = "drop")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{map}}{a \code{mapR} object}
+\item{\code{map}}{a \code{umapR} object}
 
-\item{\code{join}}{Boolean, whether to join the values if the reference map 
-and \code{map} have some identical keys}
+\item{\code{duplicated}}{the action to perform if the reference map 
+and \code{map} have some identical keys, one of 
+\code{"drop"}, \code{"join"}, or \code{"separate"}}
 }
 \if{html}{\out{</div>}}
 }
@@ -578,21 +599,24 @@ map2 <- umapR$new(
 map1$merge(map2)
 map1
 
-# `join` example ####
+# `duplicated` example ####
 map1 <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
+map1_copy1 <- map1$copy()
+map1_copy2 <- map1$copy()
+map1_copy3 <- map1$copy()
 map2 <- umapR$new(
   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
 )
-map1$merge(map2, join = FALSE)
-map1
+map1_copy1$merge(map2)
+map1_copy1
 
-map1 <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map1$merge(map2, join = TRUE)
-map1
+map1_copy2$merge(map2, duplicated = "join")
+map1_copy2
+
+map1_copy3$merge(map2, duplicated = "separate")
+map1_copy3
 }
 \if{html}{\out{</div>}}
 
@@ -600,20 +624,30 @@ map1
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
+\if{html}{\out{<a id="method-copy"></a>}}
+\if{latex}{\out{\hypertarget{method-copy}{}}}
+\subsection{Method \code{copy()}}{
+Copy the reference map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$copy()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
+\subsection{Returns}{
+A copy of the reference map.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{map <- umapR$new(c("a", "b"), list(c(1,2), c(FALSE, TRUE)))
+true_copy <- map$copy()
+true_copy$erase("a")
+map
+naive_copy <- map
+naive_copy$erase("a")
+map
 }
 \if{html}{\out{</div>}}
+
 }
+
 }
 }
