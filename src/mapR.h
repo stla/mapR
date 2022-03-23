@@ -6,7 +6,7 @@
 #include <boost/container/flat_map.hpp>
 #include <boost/unordered_map.hpp>
 
-typedef boost::container::flat_map<std::string, std::vector<double>> omapR;
+typedef boost::container::flat_map<std::string, SEXP> omapR;
 typedef boost::unordered::unordered_map<std::string, SEXP> umapR;
 
 #endif

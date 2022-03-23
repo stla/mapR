@@ -2,20 +2,20 @@
 #include "mapR.h"
 #endif
 
-omapR omapNew(std::vector<std::string> keys, Rcpp::List values) {
+omapR omapNew(Rcpp::StringVector keys, Rcpp::List values) {
   omapR omap;
-  for(size_t i = 0; i < keys.size(); i++) {
-    std::vector<double> v = values[i];
-    omap.emplace(keys[i], v);
+  for(R_xlen_t i = 0; i < keys.size(); i++) {
+    //SEXP v = values[i];
+    omap.emplace(keys[i], values[i]);
   }
   return omap;
 }
 
 umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
   umapR umap;
-  for(size_t i = 0; i < keys.size(); i++) {
-    SEXP v = values[i];
-    umap.emplace(keys[i], v);
+  for(R_xlen_t i = 0; i < keys.size(); i++) {
+    //SEXP v = values[i];
+    umap.emplace(keys[i], values[i]);
   }
   return umap;
 }

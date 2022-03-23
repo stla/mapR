@@ -1,15 +1,27 @@
+isScalar <- function(x){
+  is.null(dim(x)) && length(x) == 1L && !is.na(x)
+}
+
+isVector <- function(x){
+  is.null(dim(x)) && !any(is.na(x))
+}
+
+isBoolean <- function(x){
+  is.logical(x) && isScalar(x)
+}
+
 isString <- function(x){
-  is.atomic(x) && is.character(x) && length(x) == 1L && !is.na(x)
+  is.character(x) && isScalar(x)
 }
 
 isNumericVector <- function(x){
-  is.atomic(x) && is.numeric(x) && !any(is.na(x))
+  is.numeric(x) && isVector(x)
 }
 
 isCharacterVector <- function(x){
-  is.atomic(x) && is.character(x) && length(x) > 0L && !any(is.na(x))
+  is.character(x) && isVector(x)
 }
 
 isPositiveInteger <- function(x){
-  is.atomic(x) && is.numeric(x) && length(x) == 1L && !is.na(x) && floor(x) == x
+  is.numeric(x) && isScalar(x) && floor(x) == x
 }

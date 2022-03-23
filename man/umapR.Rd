@@ -256,7 +256,7 @@ umapR$new(
 \if{html}{\out{<a id="method-print"></a>}}
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
-Show instance of a \code{mapR} object.
+Show instance of a \code{umapR} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$print(...)}\if{html}{\out{</div>}}
 }

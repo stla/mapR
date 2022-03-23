@@ -9,7 +9,7 @@ RCPP_MODULE(class_oMAPR) {
 
   class_<oMAPR>("oMAPR")
 
-      .constructor<std::vector<std::string>, Rcpp::List>()
+      .constructor<Rcpp::StringVector, Rcpp::List>()
 
       .field_readonly("ptr", &oMAPR::ptr)
 

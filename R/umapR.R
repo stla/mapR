@@ -86,7 +86,7 @@ umapR <- R6Class(
       # private[[".ptr"]] <- UMAPR$ptr
     },
     
-    #' @description Show instance of a \code{mapR} object.
+    #' @description Show instance of a \code{umapR} object.
     #' @param ... ignored
     print = function(...) {
       size <- self$size()
@@ -190,6 +190,7 @@ umapR <- R6Class(
     #' map$at("x", stop_if_not_found = FALSE)
     at = function(key, stop_if_not_found = TRUE){
       stopifnot(isString(key))
+      stopifnot(isBoolean(stop_if_not_found))
       if(stop_if_not_found){
         private[[".map"]]$at(key)
       }else{
@@ -259,6 +260,7 @@ umapR <- R6Class(
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
+      stopifnot(isBoolean(replace))
       if(replace){
         private[[".map"]]$assign(key, value)
       }else{
@@ -285,7 +287,7 @@ umapR <- R6Class(
       stopifnot(isCharacterVector(keys))
       if(length(keys) == 1L){
         private[[".map"]]$erase(keys)
-      }else{
+      }else if(length(keys) >= 2L){
         private[[".map"]]$merase(keys)
       }
     },

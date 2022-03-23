@@ -1,21 +1,21 @@
-#' @useDynLib mapR, .registration=TRUE
-#' @importFrom Rcpp evalCpp setRcppClass  
-NULL
-
 # Rcpp::loadModule("maprModule", what = "MAPR")
 # Rcpp::loadModule("maprptrModule", what = "MAPRPTR")
 
 
-#' @title R6 class representing a map
+#' @title R6 class representing an ordered map
 #'
 #' @description A map is given by keys and values.
 #'
 #' @export
 #' @importFrom R6 R6Class
 #' @importFrom methods new
-mapR <- R6Class(
+omapR <- R6Class(
   
-  "mapR",
+  "omapR",
+  
+  lock_class = TRUE,
+  
+  cloneable = FALSE,
   
   private = list(
     # .ptr = NULL,
@@ -24,30 +24,39 @@ mapR <- R6Class(
   
   public = list(
     
-    #' @description Creates a new \code{mapR} object.
+    #' @description Creates a new \code{omapR} object.
     #'
-    #' @param keys keys, a character vector
-    #' @param values values, a list of numeric vectors; \code{keys} and 
+    #' @param keys keys, a character vector without \code{NA} value
+    #' @param values values, a list of R objects; \code{keys} and 
     #'   \code{values} must have the same length
-    #' @param join Boolean, whether to join the values of duplicated keys
+    #' @param duplicated the action to perform for duplicated keys, one of 
+    #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
     #'
-    #' @return A \code{mapR} object.
+    #' @return An \code{omapR} object.
     #'
     #' @examples
-    #' mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' omapR$new(
+    #'   keys = c("z", "a"), 
+    #'   values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' mapR$new(
+    #' # examples with duplicated keys:
+    #' omapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6))
     #' )
-    #' mapR$new(
+    #' omapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
-    #'   join = TRUE
+    #'   duplicated = "join"
     #' )
-    initialize = function(keys, values, join = FALSE, checks = TRUE){
+    #' omapR$new(
+    #'   keys = c("a", "a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
+    #'   duplicated = "separate"
+    #' )
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
       if(checks){
         keys <- as.character(keys)
         if(any(is.na(keys))){
@@ -57,31 +66,33 @@ mapR <- R6Class(
           is.list(values),
           length(keys) == length(values)
         )
-        modes <- vapply(values, mode, character(1L))
-        if(any(modes != "numeric")){
-          stop("The values must be given as a list of numeric vectors.")
-        }
       }
-      if(join && anyDuplicated(keys)){
-        splt <- split(values, keys)
-        values <- lapply(splt, function(x) do.call(c, x))
-        keys <- names(values)
+      if(duplicated != "drop" && anyDuplicated(keys)){
+        if(duplicated == "join"){
+          splt <- split(values, keys)
+          values <- lapply(splt, function(x){
+            if(length(x) == 1L) x[[1L]] else x
+          })
+          keys <- names(values)
+        }else{ # duplicated == "separate"
+          keys <- make.unique2(keys)
+        }
       }
       OMAPR <- new("oMAPR", keys, values)
       private[[".map"]] <- OMAPR
     },
     
-    #' @description Show instance of a \code{mapR} object.
+    #' @description Show instance of a \code{omapR} object.
     #' @param ... ignored
     print = function(...) {
       size <- self$size()
       if(size == 0L){
-        cat("empty `mapR`")
+        cat("empty `omapR`")
       }else{
         keys <- sprintf('"%s"', self$keys())
-        values <- vapply(self$values(), toString, character(1L))
+        values <- vapply(self$values(), toString2, character(1L))
         s <- ifelse(size > 1L, "s", "")
-        cat(sprintf("`mapR` containing %d item%s:\n\n", size, s))
+        cat(sprintf("`omapR` containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
         cat(lines, sep = "\n")
       }
@@ -92,7 +103,7 @@ mapR <- R6Class(
     #' @return An integer, the number of entries.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$size()
@@ -105,7 +116,7 @@ mapR <- R6Class(
     #' @return The keys, a character vector.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$keys()
@@ -118,7 +129,7 @@ mapR <- R6Class(
     #' @return The values, a list of numeric vectors.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$values()
@@ -131,7 +142,7 @@ mapR <- R6Class(
     #' @return The entries in a dataframe.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$items()
@@ -146,7 +157,7 @@ mapR <- R6Class(
     #' @return A named list.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$toList()
@@ -163,16 +174,17 @@ mapR <- R6Class(
     #' @param stop_if_not_found a Boolean value, whether to stop if the key 
     #'   is not found, or to return \code{NaN}
     #'
-    #' @return The value corresponding to the key, a numeric vector.
+    #' @return The value corresponding to the key, a R object.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
     #' map$at("x", stop_if_not_found = FALSE)
     at = function(key, stop_if_not_found = TRUE){
       stopifnot(isString(key))
+      stopifnot(isBoolean(stop_if_not_found))
       if(stop_if_not_found){
         private[[".map"]]$at(key)
       }else{
@@ -191,7 +203,7 @@ mapR <- R6Class(
     #' @return The index of the key, or \code{NA} if it is not found.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$index("b")
@@ -211,10 +223,10 @@ mapR <- R6Class(
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
     #'
-    #' @return A \code{mapR} object.
+    #' @return An \code{omapR} object.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b", "c"), 
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
@@ -223,18 +235,19 @@ mapR <- R6Class(
       stopifnot(isCharacterVector(keys))
       keys <- intersect(keys, self$keys())
       lst <- self$toList()
-      mapR$new(keys, lst[keys], checks = FALSE) 
+      omapR$new(keys, lst[keys], checks = FALSE) 
     },
     
-    #' @description Checks whether a key exists in a map.
+    #' @description Checks whether a key exists in the reference map.
     #'
     #' @param key a key (string)
     #'
     #' @return A Boolean value.
     #'
     #' @examples
-    #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' map <- omapR$new(
+    #'   keys = c("a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$has_key("b")
     #' map$has_key("x")
@@ -243,7 +256,7 @@ mapR <- R6Class(
       private[[".map"]]$has_key(key)
     },
     
-    #' @description Returns the n-th entry of the map.
+    #' @description Returns the n-th entry of the reference map.
     #'
     #' @param n index, a positive integer
     #' @param stop_if_too_large a Boolean value, whether to stop if \code{n}
@@ -252,13 +265,14 @@ mapR <- R6Class(
     #' @return A list with the key and the value at index \code{n}.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$nth(2)
     #' map$nth(9, stop_if_too_large = FALSE)
     nth = function(n, stop_if_too_large = TRUE){
       stopifnot(isPositiveInteger(n))
+      stopifnot(isBoolean(stop_if_too_large))
       if(stop_if_too_large){
         private[[".map"]]$nth(as.integer(n) - 1L)
       }else{
@@ -270,18 +284,19 @@ mapR <- R6Class(
       }
     },
     
-    #' @description Insert a new entry.
+    #' @description Insert a new entry in the reference map.
     #'
     #' @param key a key (string)
-    #' @param value a value (numeric vector)
+    #' @param value a value (R object)
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
     #' @return Nothing, this updates the map.
     #'
     #' @examples
-    #' map <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+    #' map <- omapR$new(
+    #'   keys = c("a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$insert("c", c(6, 7))
     #' map
@@ -291,7 +306,7 @@ mapR <- R6Class(
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
-      stopifnot(isNumericVector(value))
+      stopifnot(isBoolean(replace))
       if(replace){
         private[[".map"]]$assign(key, value)
       }else{
@@ -299,14 +314,14 @@ mapR <- R6Class(
       }
     },
     
-    #' @description Erase some entries.
+    #' @description Erase some entries of the reference map.
     #'
     #' @param keys some keys, a character vector
     #'
     #' @return Nothing, this updates the map.
     #'
     #' @examples
-    #' map <- mapR$new(
+    #' map <- omapR$new(
     #'   keys = c("a", "b", "c"), 
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
@@ -318,57 +333,95 @@ mapR <- R6Class(
       stopifnot(isCharacterVector(keys))
       if(length(keys) == 1L){
         private[[".map"]]$erase(keys)
-      }else{
+      }else if(length(keys) >= 2L){
         private[[".map"]]$merase(keys)
       }
     },
     
-    #' @description Merge with another map.
+    #' @description Merge the reference map with another map.
     #'
-    #' @param map a \code{mapR} object
-    #' @param join Boolean, whether to join the values if the reference map 
-    #'   and \code{map} have some identical keys
+    #' @param map an \code{omapR} object
+    #' @param duplicated the action to perform if the reference map 
+    #'   and \code{map} have some identical keys, one of 
+    #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #'
     #' @return Nothing, this updates the reference map.
     #'
     #' @examples
-    #' map1 <- mapR$new(
+    #' map1 <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map2 <- mapR$new(
+    #' map2 <- omapR$new(
     #'   keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
     #' )
     #' map1$merge(map2)
     #' map1
     #' 
-    #' # `join` example ####
-    #' map1 <- mapR$new(
+    #' # `duplicated` example ####
+    #' map1 <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map2 <- mapR$new(
+    #' map1_copy1 <- map1$copy()
+    #' map1_copy2 <- map1$copy()
+    #' map1_copy3 <- map1$copy()
+    #' map2 <- omapR$new(
     #'   keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
     #' )
-    #' map1$merge(map2, join = FALSE)
-    #' map1
+    #' map1_copy1$merge(map2)
+    #' map1_copy1
     #' 
-    #' map1 <- mapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-    #' )
-    #' map1$merge(map2, join = TRUE)
-    #' map1
-    merge = function(map, join = FALSE){
-      stopifnot(inherits(map, "mapR"))
-      if(join && anyDuplicated(keys <- c(self$keys(), map$keys()))){
-        values <- c(self$values(), map$values())
-        splt <- split(values, keys)
-        values <- lapply(splt, function(x) do.call(c, x))
-        keys <- names(values)
-        OMAPR <- new("oMAPR", keys, values)
-        private[[".map"]] <- OMAPR
+    #' map1_copy2$merge(map2, duplicated = "join")
+    #' map1_copy2
+    #' 
+    #' map1_copy3$merge(map2, duplicated = "separate")
+    #' map1_copy3
+    merge = function(map, duplicated = "drop"){
+      stopifnot(inherits(map, "omapR"))
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+      if(duplicated != "drop"){
+        keys1 <- self$keys()
+        keys2 <- map$keys()
+        if(length(intersect(keys1, keys2))){
+          keys <- c(keys1, keys2)
+          values <- c(self$values(), map$values())
+          if(duplicated == "join"){
+            splt <- split(values, keys)
+            values <- lapply(splt, function(x){
+              if(length(x) == 1L) x[[1L]] else x
+            })
+            keys <- names(values)
+          }else{ # duplicated == "separate"
+            keys <- make.unique2(keys)
+          }
+          OMAPR <- new("oMAPR", keys, values)
+          private[[".map"]] <- OMAPR
+        }else{
+          .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
+          private[[".map"]]$merge(.map2$ptr)
+        }
       }else{
         .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
         private[[".map"]]$merge(.map2$ptr)
       }
+    },
+    
+    #' @description Copy the reference map.
+    #'
+    #' @return A copy of the reference map.
+    #' 
+    #' @examples 
+    #' map <- omapR$new(
+    #'   c("a", "b"), 
+    #'   list(c(1,2), c(FALSE, TRUE))
+    #' )
+    #' true_copy <- map$copy()
+    #' true_copy$erase("a")
+    #' map
+    #' naive_copy <- map
+    #' naive_copy$erase("a")
+    #' map
+    copy = function(){
+      omapR$new(self$keys(), self$values(), checks = FALSE)
     }
     
   )

@@ -1,10 +1,10 @@
-omapR omapNew(std::vector<std::string>, Rcpp::List);
+omapR omapNew(Rcpp::StringVector, Rcpp::List);
 
 class oMAPR {
   omapR omap;
 
  public:
-  oMAPR(std::vector<std::string> keys_, Rcpp::List values_)
+  oMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : omap(omapNew(keys_, values_)),
         ptr(Rcpp::XPtr<omapR>(new omapR(omap))) {}
 
@@ -12,7 +12,7 @@ class oMAPR {
 
   unsigned size() { return omap.size(); }
 
-  std::vector<double> at(std::string key) {
+  SEXP at(std::string key) {
     omapR::iterator it = omap.find(key);
     if(it != omap.end()) {
       return it->second;
@@ -39,13 +39,13 @@ class oMAPR {
     }
     omapR::iterator it = omap.nth(i);
     std::string key = it->first;
-    std::vector<double> value = it->second;
+    SEXP value = it->second;
     return Rcpp::List::create(Rcpp::Named("key") = key,
                               Rcpp::Named("value") = value);
   }
 
-  std::vector<std::string> keys() {
-    std::vector<std::string> out(0);
+  Rcpp::StringVector keys() {
+    Rcpp::StringVector out(0);
     for(omapR::iterator it = omap.begin(); it != omap.end(); it++) {
       out.push_back(it->first);
     }
@@ -63,12 +63,12 @@ class oMAPR {
     return out;
   }
 
-  void insert(std::string key, std::vector<double> value) {
+  void insert(std::string key, SEXP value) {
     omap.emplace(key, value);
     //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
   }
 
-  void assign(std::string key, std::vector<double> value) {
+  void assign(std::string key, SEXP value) {
     omap.insert_or_assign(key, value);
     //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
   }
@@ -78,8 +78,8 @@ class oMAPR {
     //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
   }
 
-  void merase(std::vector<std::string> keys) {
-    for(std::string key : keys) {
+  void merase(Rcpp::StringVector keys) {
+    for(Rcpp::String key : keys) {
       omap.erase(key);
     }
     //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
