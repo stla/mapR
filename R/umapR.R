@@ -322,7 +322,7 @@ umapR <- R6Class(
         splt <- split(values, keys)
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
-        UMAPR <- new(uMAPR, keys, values)
+        UMAPR <- new("uMAPR", keys, values)
         # private[[".ptr"]] <- UMAPR$ptr
         private[[".map"]] <- UMAPR
       }else{
