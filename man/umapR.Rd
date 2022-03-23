@@ -2,7 +2,7 @@
 % Please edit documentation in R/umapR.R
 \name{umapR}
 \alias{umapR}
-\title{R6 class representing a map}
+\title{R6 class representing a umap}
 \description{
 A map is given by keys and values.
 }
@@ -22,7 +22,12 @@ umapR$new(
 umapR$new(
   keys = c("a", "a", "b"), 
   values = list(c(1, 2), c(3, 4), c(5, 6)),
-  join = TRUE
+  duplicated = "join"
+)
+umapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6)),
+  duplicated = "separate"
 )
 
 ## ------------------------------------------------
@@ -181,7 +186,7 @@ map1
 \subsection{Method \code{new()}}{
 Creates a new \code{umapR} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, join = FALSE, checks = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, duplicated = "drop", checks = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -192,7 +197,8 @@ Creates a new \code{umapR} object.
 \item{\code{values}}{values, a list of numeric vectors; \code{keys} and 
 \code{values} must have the same length}
 
-\item{\code{join}}{Boolean, whether to join the values of duplicated keys}
+\item{\code{duplicated}}{the action to perform for duplicated keys, one of 
+\code{"drop"}, \code{"join"}, or \code{"separate"}}
 
 \item{\code{checks}}{Boolean, whether to check \code{keys} and \code{values}}
 }
@@ -213,7 +219,12 @@ umapR$new(
 umapR$new(
   keys = c("a", "a", "b"), 
   values = list(c(1, 2), c(3, 4), c(5, 6)),
-  join = TRUE
+  duplicated = "join"
+)
+umapR$new(
+  keys = c("a", "a", "b"), 
+  values = list(c(1, 2), c(3, 4), c(5, 6)),
+  duplicated = "separate"
 )
 }
 \if{html}{\out{</div>}}

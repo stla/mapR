@@ -23,7 +23,8 @@ umapR <- R6Class(
     #' @param keys keys, a character vector
     #' @param values values, a list of numeric vectors; \code{keys} and 
     #'   \code{values} must have the same length
-    #' @param join Boolean, whether to join the values of duplicated keys
+    #' @param duplicated the action to perform for duplicated keys, one of 
+    #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
     #'
     #' @return A \code{mapR} object.
@@ -39,9 +40,15 @@ umapR <- R6Class(
     #' umapR$new(
     #'   keys = c("a", "a", "b"), 
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
-    #'   join = TRUE
+    #'   duplicated = "join"
     #' )
-    initialize = function(keys, values, join = FALSE, checks = TRUE){
+    #' umapR$new(
+    #'   keys = c("a", "a", "b"), 
+    #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
+    #'   duplicated = "separate"
+    #' )
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
       if(checks){
         keys <- as.character(keys)
         if(any(is.na(keys))){
@@ -56,12 +63,16 @@ umapR <- R6Class(
         #   stop("The values must be given as a list of numeric vectors.")
         # }
       }
-      if(join && anyDuplicated(keys)){
-        splt <- split(values, keys)
-        values <- lapply(splt, function(x){
-          if(length(x) == 1L) x else x#do.call(c, lapply(x, list))
-        })
-        keys <- names(values)
+      if(anyDuplicated(keys) && duplicated != "drop"){
+        if(duplicated == "join"){
+          splt <- split(values, keys)
+          values <- lapply(splt, function(x){
+            if(length(x) == 1L) x[[1L]] else x#do.call(c, lapply(x, list))
+          })
+          keys <- names(values)
+        }else{ # duplicated == "separate"
+          keys <- make.unique2(keys)
+        }
       }
       UMAPR <- new(uMAPR, keys, values)
       private[[".map"]] <- UMAPR

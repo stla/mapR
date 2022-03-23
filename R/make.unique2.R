@@ -1,6 +1,6 @@
 dotify <- function(x, avoid){
   l <- length(x)
-  if(l == 1L && !x %in% avoid){
+  if(l == 1L){# && !x %in% avoid){
     return(x)
   }
   numbers <- 1L:l
