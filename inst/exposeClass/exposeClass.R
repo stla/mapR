@@ -1,0 +1,1 @@
+Rcpp::exposeClass("oMAPR", constructors = list(c("std::vector<std::string>", "Rcpp::List")), fields = "ptr", methods = c("size", "at", "has_key", "index", "nth", "insert", "assign", "erase", "merase", "merge", "keys", "values"), header = '#include "oMAPR.h"', readOnly = "ptr")

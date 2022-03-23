@@ -1,9 +1,9 @@
 #' @useDynLib mapR, .registration=TRUE
-#' @importFrom Rcpp evalCpp  
+#' @importFrom Rcpp evalCpp setRcppClass  
 NULL
 
-Rcpp::loadModule("maprModule", what = "MAPR")
-Rcpp::loadModule("maprptrModule", what = "MAPRPTR")
+# Rcpp::loadModule("maprModule", what = "MAPR")
+# Rcpp::loadModule("maprptrModule", what = "MAPRPTR")
 
 
 #' @title R6 class representing a map
@@ -18,25 +18,9 @@ mapR <- R6Class(
   "mapR",
   
   private = list(
-    .ptr = NULL,
+    # .ptr = NULL,
     .map = NULL
   ),
-  
-  # active = list(
-  #   center = function(value) {
-  #     if (missing(value)) {
-  #       private[[".center"]]
-  #     } else {
-  #       center <- as.vector(value)
-  #       stopifnot(
-  #         is.numeric(center),
-  #         length(center) == 2L,
-  #         !any(is.na(center))
-  #       )
-  #       private[[".center"]] <- center
-  #     }
-  #   }
-  # ),
   
   public = list(
     
@@ -83,9 +67,8 @@ mapR <- R6Class(
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
       }
-      ptr <- new(MAPR, keys, values)$ptr#mapPointer()
-      private[[".ptr"]] <- ptr
-      private[[".map"]] <- new(MAPRPTR, ptr)
+      OMAPR <- new("oMAPR", keys, values)
+      private[[".map"]] <- OMAPR
     },
     
     #' @description Show instance of a \code{mapR} object.
@@ -380,12 +363,11 @@ mapR <- R6Class(
         splt <- split(values, keys)
         values <- lapply(splt, function(x) do.call(c, x))
         keys <- names(values)
-        ptr <- new(MAPR, keys, values)$ptr#mapPointer()
-        private[[".ptr"]] <- ptr
-        private[[".map"]] <- new(MAPRPTR, ptr)
+        OMAPR <- new("oMAPR", keys, values)
+        private[[".map"]] <- OMAPR
       }else{
-        map2 <- map[[".__enclos_env__"]][["private"]][[".ptr"]]
-        private[[".map"]]$merge(map2)
+        .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
+        private[[".map"]]$merge(.map2$ptr)
       }
     }
     
