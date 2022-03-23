@@ -51,14 +51,16 @@ umapR <- R6Class(
           is.list(values),
           length(keys) == length(values)
         )
-        modes <- vapply(values, mode, character(1L))
-        if(any(modes != "numeric")){
-          stop("The values must be given as a list of numeric vectors.")
-        }
+        # modes <- vapply(values, mode, character(1L))
+        # if(any(modes != "numeric")){
+        #   stop("The values must be given as a list of numeric vectors.")
+        # }
       }
       if(join && anyDuplicated(keys)){
         splt <- split(values, keys)
-        values <- lapply(splt, function(x) do.call(c, x))
+        values <- lapply(splt, function(x){
+          if(length(x) == 1L) x else x#do.call(c, lapply(x, list))
+        })
         keys <- names(values)
       }
       UMAPR <- new(uMAPR, keys, values)

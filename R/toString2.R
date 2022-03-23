@@ -1,3 +1,7 @@
+isVectorType <- function(x){
+  x %in% c("logical", "integer", "double", "complex", "character")
+}
+
 #' @importFrom R6 is.R6 is.R6Class
 #' @noRd
 class2 <- function(x){
@@ -11,7 +15,9 @@ class2 <- function(x){
         out <- if(is.factor(x)){
           "factor"
         }else{
-          if(!inherits(x, type)){ # e.g. gmp::bigq, jsonlite::json 
+          if(inherits(x, "json")){
+            type <- "json"
+          }else if(!isVectorType(type) && !inherits(x, type)){ # e.g. gmp::bigq, jsonlite::json 
             type <- class(x)[1L]
           }
           if(length(x) >= 2L){
