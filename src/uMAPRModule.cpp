@@ -10,6 +10,7 @@ RCPP_MODULE(class_uMAPR) {
   class_<uMAPR>("uMAPR")
 
       .constructor<Rcpp::StringVector, Rcpp::List>()
+      .constructor<Rcpp::XPtr<umapR>>()
 
       .field_readonly("ptr", &uMAPR::ptr)
 
@@ -20,7 +21,9 @@ RCPP_MODULE(class_uMAPR) {
       .method("assign", &uMAPR::assign)
       .method("erase", &uMAPR::erase)
       .method("merase", &uMAPR::merase)
+      .method("extract", &uMAPR::extract)
       .method("merge", &uMAPR::merge)
       .method("keys", &uMAPR::keys)
+      .method("keys2", &uMAPR::keys2)
       .method("values", &uMAPR::values);
 }

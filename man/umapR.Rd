@@ -89,6 +89,16 @@ map$at("b")
 map$at("x", stop_if_not_found = FALSE)
 
 ## ------------------------------------------------
+## Method `umapR$extract`
+## ------------------------------------------------
+
+map <- umapR$new(
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+)
+map$extract(c("a", "c"))
+
+## ------------------------------------------------
 ## Method `umapR$submap`
 ## ------------------------------------------------
 
@@ -190,6 +200,7 @@ map
 \item \href{#method-items}{\code{umapR$items()}}
 \item \href{#method-toList}{\code{umapR$toList()}}
 \item \href{#method-at}{\code{umapR$at()}}
+\item \href{#method-extract}{\code{umapR$extract()}}
 \item \href{#method-submap}{\code{umapR$submap()}}
 \item \href{#method-has_key}{\code{umapR$has_key()}}
 \item \href{#method-insert}{\code{umapR$insert()}}
@@ -418,6 +429,39 @@ The value corresponding to the key, an R object.
 )
 map$at("b")
 map$at("x", stop_if_not_found = FALSE)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-extract"></a>}}
+\if{latex}{\out{\hypertarget{method-extract}{}}}
+\subsection{Method \code{extract()}}{
+Extract submap.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{keys}}{some keys, a character vector; those which do not belong to 
+the keys of the reference map will be ignored}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{umapR} object.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{map <- umapR$new(
+  keys = c("a", "b", "c"), 
+  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+)
+map$extract(c("a", "c"))
 }
 \if{html}{\out{</div>}}
 

@@ -54,36 +54,41 @@ umapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   duplicated = "separate"
     #' )
-    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
-      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
-      if(checks){
-        keys <- as.character(keys)
-        if(any(is.na(keys))){
-          stop("Keys cannot contain missing values.")
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL){
+      if(!is.null(ptr)){
+        UMAPR <- new("uMAPR", ptr)
+        private[[".map"]] <- UMAPR
+      }else{
+        duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+        if(checks){
+          keys <- as.character(keys)
+          if(any(is.na(keys))){
+            stop("Keys cannot contain missing values.")
+          }
+          stopifnot(
+            is.list(values),
+            length(keys) == length(values)
+          )
+          # modes <- vapply(values, mode, character(1L))
+          # if(any(modes != "numeric")){
+          #   stop("The values must be given as a list of numeric vectors.")
+          # }
         }
-        stopifnot(
-          is.list(values),
-          length(keys) == length(values)
-        )
-        # modes <- vapply(values, mode, character(1L))
-        # if(any(modes != "numeric")){
-        #   stop("The values must be given as a list of numeric vectors.")
-        # }
-      }
-      if(duplicated != "drop" && anyDuplicated(keys)){
-        if(duplicated == "join"){
-          splt <- split(values, keys)
-          values <- lapply(splt, function(x){
-            if(length(x) == 1L) x[[1L]] else x#do.call(c, lapply(x, list))
-          })
-          keys <- names(values)
-        }else{ # duplicated == "separate"
-          keys <- make.unique2(keys)
+        if(duplicated != "drop" && anyDuplicated(keys)){
+          if(duplicated == "join"){
+            splt <- split(values, keys)
+            values <- lapply(splt, function(x){
+              if(length(x) == 1L) x[[1L]] else x#do.call(c, lapply(x, list))
+            })
+            keys <- names(values)
+          }else{ # duplicated == "separate"
+            keys <- make.unique2(keys)
+          }
         }
+        UMAPR <- new("uMAPR", keys, values)
+        private[[".map"]] <- UMAPR
+        # private[[".ptr"]] <- UMAPR$ptr
       }
-      UMAPR <- new("uMAPR", keys, values)
-      private[[".map"]] <- UMAPR
-      # private[[".ptr"]] <- UMAPR$ptr
     },
     
     #' @description Show instance of a \code{umapR} object.
@@ -200,6 +205,25 @@ umapR <- R6Class(
           NaN
         })
       }
+    },
+    
+    #' @description Extract submap.
+    #'
+    #' @param keys some keys, a character vector; those which do not belong to 
+    #'   the keys of the reference map will be ignored
+    #'
+    #' @return A \code{umapR} object.
+    #'
+    #' @examples
+    #' map <- umapR$new(
+    #'   keys = c("a", "b", "c"), 
+    #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
+    #' )
+    #' map$extract(c("a", "c"))
+    extract = function(keys){
+      stopifnot(isCharacterVector(keys))
+      ptr <- private[[".map"]]$extract(keys) 
+      umapR$new(ptr = ptr)
     },
     
     #' @description Extract submap.

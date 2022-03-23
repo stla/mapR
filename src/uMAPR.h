@@ -9,6 +9,7 @@ class uMAPR {
   uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : umap(umapNew(keys_, values_)),
         ptr(Rcpp::XPtr<umapR>(new umapR(umap))) {}
+  uMAPR(Rcpp::XPtr<umapR> ptr_) : umap(*ptr_), ptr(ptr_) {}
 
   Rcpp::XPtr<umapR> ptr;
 
@@ -33,6 +34,17 @@ class uMAPR {
     return out;
   }
 
+  Rcpp::StringVector keys2() {
+    unsigned s = umap.size();
+    Rcpp::StringVector out(s);
+    unsigned i = 0;
+    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
+      out[i] = it->first;
+      i++;
+    }
+    return out;
+  }
+  
   Rcpp::List values() {
     const unsigned s = umap.size();
     Rcpp::List out(s);
@@ -63,9 +75,19 @@ class uMAPR {
     for(Rcpp::String key : keys) {
       umap.erase(key);
     }
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 
+  Rcpp::XPtr<umapR> extract(Rcpp::StringVector keys) {
+    umapR submap;
+    for(Rcpp::String key : keys) {
+      umapR::iterator it = umap.find(key);
+      if(it != umap.end()) {
+        submap.emplace(key, it->second);
+      }
+    }
+    return Rcpp::XPtr<umapR>(new umapR(submap));
+  }
+  
   void merge(Rcpp::XPtr<umapR> umap2) {
     umap.merge(*umap2);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
