@@ -52,15 +52,6 @@ map <- umapR$new(
 map$keys()
 
 ## ------------------------------------------------
-## Method `umapR$keys2`
-## ------------------------------------------------
-
-map <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map$keys2()
-
-## ------------------------------------------------
 ## Method `umapR$values`
 ## ------------------------------------------------
 
@@ -205,7 +196,6 @@ map
 \item \href{#method-print}{\code{umapR$print()}}
 \item \href{#method-size}{\code{umapR$size()}}
 \item \href{#method-keys}{\code{umapR$keys()}}
-\item \href{#method-keys2}{\code{umapR$keys2()}}
 \item \href{#method-values}{\code{umapR$values()}}
 \item \href{#method-items}{\code{umapR$items()}}
 \item \href{#method-toList}{\code{umapR$toList()}}
@@ -334,30 +324,6 @@ The keys, a character vector.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$keys()
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-keys2"></a>}}
-\if{latex}{\out{\hypertarget{method-keys2}{}}}
-\subsection{Method \code{keys2()}}{
-Get all keys 2.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$keys2()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The keys, a character vector.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{map <- umapR$new(
-  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-)
-map$keys2()
 }
 \if{html}{\out{</div>}}
 

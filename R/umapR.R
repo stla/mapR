@@ -136,19 +136,6 @@ umapR <- R6Class(
       private[[".map"]]$keys()
     },
 
-    #' @description Get all keys 2.
-    #'
-    #' @return The keys, a character vector.
-    #'
-    #' @examples
-    #' map <- umapR$new(
-    #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
-    #' )
-    #' map$keys2()
-    keys2 = function(){
-      private[[".map"]]$keys2()
-    },
-    
     #' @description Get all values.
     #'
     #' @return The values, a list of R objects.

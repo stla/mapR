@@ -27,15 +27,15 @@ class uMAPR {
 
   bool has_key(std::string key) { return umap.find(key) != umap.end(); }
 
-  Rcpp::StringVector keys() {
-    Rcpp::StringVector out(0);
-    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
-      out.push_back(it->first);
-    }
-    return out;
-  }
+  // Rcpp::StringVector keys() {
+  //   Rcpp::StringVector out(0);
+  //   for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
+  //     out.push_back(it->first);
+  //   }
+  //   return out;
+  // }
 
-  Rcpp::StringVector keys2() {
+  Rcpp::StringVector keys() {
     unsigned s = umap.size();
     Rcpp::StringVector out(s);
     unsigned i = 0;
