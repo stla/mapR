@@ -216,6 +216,9 @@ umapR <- R6Class(
     #'   the keys of the reference map will be ignored
     #' @param inplace Boolean, whether to update the reference map or 
     #'   to return a new map
+    #' @param bydeleting Boolean, whether to construct the submap by 
+    #'   deleting the keys which are not in \code{keys} or by starting 
+    #'   from the empty submap and adding the entries 
     #'
     #' @return A \code{umapR} object if \code{inplace=FALSE}, 
     #'   nothing otherwise.
@@ -226,9 +229,10 @@ umapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
     #' map$extract(c("a", "c"))
-    extract = function(keys, inplace = FALSE){
+    extract = function(keys, inplace = FALSE, bydeleting = FALSE){
       stopifnot(isCharacterVector(keys))
       stopifnot(isBoolean(inplace))
+      stopifnot(isBoolean(bydeleting))
       if(length(keys) == 0L){
         if(inplace){
           private[[".map"]] <- new("uMAPR", character(0L), list())
@@ -237,13 +241,25 @@ umapR <- R6Class(
           umapR$new(character(0L), list(), checks = FALSE)
         }
       }else{
-        ptr <- private[[".map"]]$extract(keys) 
-        if(inplace){
-          UMAPR <- new("uMAPR", ptr)
-          private[[".map"]] <- UMAPR
-          invisible(NULL)
+        if(bydeleting){
+          if(inplace){
+            private[[".map"]]$extract_by_erasing_inplace(keys)
+            invisible(NULL)
+          }else{
+            ptr <- private[[".map"]]$extract_by_erasing(keys)
+            umapR$new(ptr = ptr)
+          }
         }else{
-          umapR$new(ptr = ptr) 
+          # ptr <- private[[".map"]]$extract(keys) 
+          if(inplace){
+            # UMAPR <- new("uMAPR", ptr)
+            # private[[".map"]] <- UMAPR
+            private[[".map"]]$extract_inplace(keys)
+            invisible(NULL)
+          }else{
+            ptr <- private[[".map"]]$extract(keys)
+            umapR$new(ptr = ptr) 
+          }
         }
       }
     },

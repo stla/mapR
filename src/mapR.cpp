@@ -20,6 +20,16 @@ umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
   return umap;
 }
 
+std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
+  std::vector<std::string> diff(0);
+  for(Rcpp::String s : V) {
+    if(std::find(U.begin(), U.end(), s) == U.end()){
+      diff.push_back(s);
+    }
+  }
+  return diff;
+}
+
 // Rcpp::XPtr<mapR> mapPointer(std::vector<std::string> keys, Rcpp::List values)
 // {
 //   mapR map;

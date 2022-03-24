@@ -443,7 +443,7 @@ map$at("x", stop_if_not_found = FALSE)
 \subsection{Method \code{extract()}}{
 Extract submap.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys, inplace = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys, inplace = FALSE, bydeleting = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -454,6 +454,10 @@ the keys of the reference map will be ignored}
 
 \item{\code{inplace}}{Boolean, whether to update the reference map or 
 to return a new map}
+
+\item{\code{bydeleting}}{Boolean, whether to construct the submap by 
+deleting the keys which are not in \code{keys} or by starting 
+from the empty submap and adding the entries}
 }
 \if{html}{\out{</div>}}
 }

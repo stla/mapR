@@ -89,6 +89,42 @@ class uMAPR {
     return Rcpp::XPtr<umapR>(new umapR(submap));
   }
 
+  void extract_inplace(Rcpp::StringVector keys) {
+    umapR submap;
+    for(Rcpp::String key : keys) {
+      umapR::iterator it = umap.find(key);
+      if(it != umap.end()) {
+        submap.emplace(key, it->second);
+      }
+    }
+    umap = submap;
+  }
+  
+  Rcpp::XPtr<umapR> extract_by_erasing(Rcpp::StringVector keys){
+    umapR* submapptr = new umapR(umap);
+    umapR submap = *submapptr;
+    for(umapR::iterator it = submap.begin(); it != submap.end(); it++) {
+      if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
+        submap.erase(it->first);
+      }
+    }
+    // Rcpp::StringVector allkeys = this.keys2();
+    // for(Rcpp::String key : allkeys) {
+    //   if(std::find(keys.begin(), keys.end(), key) == keys.end()){
+    //     submap.erase(key);
+    //   }
+    // }
+    return Rcpp::XPtr<umapR>(new umapR(submap)); 
+  }
+
+  void extract_by_erasing_inplace(Rcpp::StringVector keys){
+    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
+      if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
+        umap.erase(it->first);
+      }
+    }
+  }
+  
   void merge(Rcpp::XPtr<umapR> umap2ptr) {
     umapR umap2 = *(umap2ptr.get());
     umap.merge(umap2);

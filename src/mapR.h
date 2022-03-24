@@ -9,4 +9,6 @@
 typedef boost::container::flat_map<std::string, Rcpp::RObject> omapR;
 typedef boost::unordered::unordered_map<std::string, Rcpp::RObject> umapR;
 
+std::vector<std::string> vectordiff(Rcpp::StringVector, Rcpp::StringVector);
+
 #endif
