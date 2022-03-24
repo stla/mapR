@@ -36,7 +36,7 @@ class uMAPR {
   // }
 
   Rcpp::StringVector keys() {
-    unsigned s = umap.size();
+    const unsigned s = umap.size();
     Rcpp::StringVector out(s);
     unsigned i = 0;
     for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
@@ -57,6 +57,22 @@ class uMAPR {
     return out;
   }
 
+  Rcpp::List toList() {
+    const unsigned s = umap.size();
+    Rcpp::StringVector Keys(s);
+    Rcpp::List Values(s);
+    unsigned i = 0;
+    for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
+      Keys(i) = it -> first;
+      Values(i) = it->second;
+      i++;
+    }
+    Rcpp::List out;
+    out["keys"] = Keys;
+    out["values"] = Values;
+    return out;
+  }
+  
   void insert(std::string key, SEXP value) {
     umap.emplace(key, value);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));

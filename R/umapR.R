@@ -159,10 +159,11 @@ umapR <- R6Class(
     #' )
     #' map$items()
     items = function(){
-      keys <- self$keys()
+      L <- private[[".map"]]$toList()
+      keys <- L[["keys"]]
       o <- order(keys)
-      values <- self$values()
-      data.frame(key = keys[o], value = I(values[o]))
+      values <- L[["values"]]
+      data.frame(key = keys, value = I(values))[o, , drop = FALSE]
     },
     
     #' @description Converts the map to a list.
@@ -175,9 +176,10 @@ umapR <- R6Class(
     #' )
     #' map$toList()
     toList = function(){
-      keys <- self$keys()
+      L <- private[[".map"]]$toList()
+      keys <- L[["keys"]]
       o <- order(keys)
-      values <- self$values()[o]
+      values <- L[["values"]][o]
       names(values) <- keys[o]
       values
     },

@@ -27,5 +27,6 @@ RCPP_MODULE(class_uMAPR) {
       .method("extract_by_erasing_inplace", &uMAPR::extract_by_erasing_inplace)
       .method("merge", &uMAPR::merge)
       .method("keys", &uMAPR::keys)
-      .method("values", &uMAPR::values);
+      .method("values", &uMAPR::values)
+      .method("toList", &uMAPR::toList);
 }

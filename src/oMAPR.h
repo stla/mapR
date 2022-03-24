@@ -47,13 +47,16 @@ class oMAPR {
   }
 
   Rcpp::StringVector keys() {
-    Rcpp::StringVector out(0);
+    unsigned s = omap.size();
+    Rcpp::StringVector out(s);
+    unsigned i = 0;
     for(omapR::iterator it = omap.begin(); it != omap.end(); it++) {
-      out.push_back(it->first);
+      out[i] = it->first;
+      i++;
     }
     return out;
   }
-
+  
   Rcpp::List values() {
     const unsigned s = omap.size();
     Rcpp::List out(s);
