@@ -4,6 +4,10 @@
 
 #include "uMAPR.h"
 
+// void finalizer_of_umapr( uMAPR* ptr ){
+//   Rcpp::Rcout << "finalizer has been called\n";
+// }
+
 RCPP_MODULE(class_uMAPR) {
   using namespace Rcpp;
 
