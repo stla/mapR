@@ -6,7 +6,7 @@ omapR omapNew(Rcpp::StringVector keys, Rcpp::List values) {
   omapR omap;
   for(R_xlen_t i = 0; i < keys.size(); i++) {
     //SEXP v = values[i];
-    omap.emplace(keys[i], values[i]);
+    std::pair<omapR::iterator, bool> x = omap.emplace(keys[i], values[i]);
   }
   return omap;
 }
@@ -15,7 +15,7 @@ umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
   umapR umap;
   for(R_xlen_t i = 0; i < keys.size(); i++) {
     //SEXP v = values[i];
-    umap.emplace(keys[i], values[i]);
+    std::pair<umapR::iterator, bool> x = umap.emplace(keys[i], values[i]);
   }
   return umap;
 }
