@@ -74,23 +74,23 @@ class uMAPR {
   }
   
   void insert(std::string key, Rcpp::RObject value) {
-    umap.emplace(key, value);
+    std::pair<umapR::iterator, bool> x = umap.emplace(key, value);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 
   void assign(std::string key, Rcpp::RObject value) {
-    umap.insert_or_assign(key, value);
+    std::pair<umapR::iterator, bool> x = umap.insert_or_assign(key, value);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 
   void erase(std::string key) {
-    umap.erase(key);
+    unsigned x = umap.erase(key);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 
   void merase(Rcpp::StringVector keys) {
     for(Rcpp::String key : keys) {
-      umap.erase(key);
+      unsigned x = umap.erase(key);
     }
   }
 
@@ -99,7 +99,7 @@ class uMAPR {
     for(Rcpp::String key : keys) {
       umapR::iterator it = umap.find(key);
       if(it != umap.end()) {
-        submap.emplace(key, it->second);
+        std::pair<umapR::iterator, bool> x = submap.emplace(key, it->second);
       }
     }
     return Rcpp::XPtr<umapR>(new umapR(submap));
@@ -110,7 +110,7 @@ class uMAPR {
     for(Rcpp::String key : keys) {
       umapR::iterator it = umap.find(key);
       if(it != umap.end()) {
-        submap.emplace(key, it->second);
+        std::pair<umapR::iterator, bool> x = submap.emplace(key, it->second);
       }
     }
     umap = submap;
@@ -121,7 +121,7 @@ class uMAPR {
     umapR submap = *submapptr;
     for(umapR::iterator it = submap.begin(); it != submap.end(); it++) {
       if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
-        submap.erase(it->first);
+        unsigned x = submap.erase(it->first);
       }
     }
     // Rcpp::StringVector allkeys = this.keys2();
@@ -136,7 +136,7 @@ class uMAPR {
   void extract_by_erasing_inplace(Rcpp::StringVector keys){
     for(umapR::iterator it = umap.begin(); it != umap.end(); it++) {
       if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
-        umap.erase(it->first);
+        unsigned x = umap.erase(it->first);
       }
     }
   }
