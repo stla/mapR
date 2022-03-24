@@ -1,8 +1,8 @@
 Package: mapR
 Type: Package
 Title: What the Package Does in One 'Title Case' Line
-Version: 1.0
-Date: 2022-03-21
+Version: 1.0.0.9000
+Date: 2022-03-24
 Author: Stéphane Laurent
 Maintainer: Stéphane Laurent <laurent_step@outlook.fr>
 Description: One paragraph description of what the package does as one or more

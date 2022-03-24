@@ -99,12 +99,13 @@ umapR <- R6Class(
     print = function(...) {
       size <- self$size()
       if(size == 0L){
-        cat("empty `umapR`")
+        cat("empty `umapR` object")
       }else{
-        keys <- sprintf('"%s"', self$keys())
-        values <- vapply(self$values(), toString2, character(1L))
+        keys_values <- private[[".map"]]$toList()
+        keys <- sprintf('"%s"', keys_values[["keys"]])
+        values <- vapply(keys_values[["values"]], toString2, character(1L))
         s <- ifelse(size > 1L, "s", "")
-        cat(sprintf("`umapR` containing %d item%s:\n\n", size, s))
+        cat(sprintf("`umapR` object containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
         cat(lines, sep = "\n")
       }
@@ -166,7 +167,7 @@ umapR <- R6Class(
       data.frame(key = keys, value = I(values))[o, , drop = FALSE]
     },
     
-    #' @description Converts the map to a list.
+    #' @description Converts the map to a named list.
     #'
     #' @return A named list.
     #'
@@ -212,7 +213,7 @@ umapR <- R6Class(
       }
     },
     
-    #' @description Extract submap.
+    #' @description Extract a submap.
     #'
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
@@ -231,6 +232,9 @@ umapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
     #' map$extract(c("a", "c"))
+    #' map
+    #' map$extract(c("a", "c"), inplace = TRUE)
+    #' map
     extract = function(keys, inplace = FALSE, bydeleting = FALSE){
       stopifnot(isCharacterVector(keys))
       stopifnot(isBoolean(inplace))
@@ -265,27 +269,7 @@ umapR <- R6Class(
         }
       }
     },
-    
-    #' @description Extract submap.
-    #'
-    #' @param keys some keys, a character vector; those which do not belong to 
-    #'   the keys of the reference map will be ignored
-    #'
-    #' @return A \code{umapR} object.
-    #'
-    #' @examples
-    #' map <- umapR$new(
-    #'   keys = c("a", "b", "c"), 
-    #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
-    #' )
-    #' map$submap(c("a", "c"))
-    submap = function(keys){
-      stopifnot(isCharacterVector(keys))
-      keys <- intersect(keys, self$keys())
-      lst <- self$toList()
-      umapR$new(keys, lst[keys], checks = FALSE) 
-    },
-    
+
     #' @description Checks whether a key exists in a map.
     #'
     #' @param key a key (string)

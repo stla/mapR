@@ -97,16 +97,9 @@ map <- umapR$new(
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
 map$extract(c("a", "c"))
-
-## ------------------------------------------------
-## Method `umapR$submap`
-## ------------------------------------------------
-
-map <- umapR$new(
-  keys = c("a", "b", "c"), 
-  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
-)
-map$submap(c("a", "c"))
+map
+map$extract(c("a", "c"), inplace = TRUE)
+map
 
 ## ------------------------------------------------
 ## Method `umapR$has_key`
@@ -201,7 +194,6 @@ map
 \item \href{#method-toList}{\code{umapR$toList()}}
 \item \href{#method-at}{\code{umapR$at()}}
 \item \href{#method-extract}{\code{umapR$extract()}}
-\item \href{#method-submap}{\code{umapR$submap()}}
 \item \href{#method-has_key}{\code{umapR$has_key()}}
 \item \href{#method-insert}{\code{umapR$insert()}}
 \item \href{#method-erase}{\code{umapR$erase()}}
@@ -382,7 +374,7 @@ map$items()
 \if{html}{\out{<a id="method-toList"></a>}}
 \if{latex}{\out{\hypertarget{method-toList}{}}}
 \subsection{Method \code{toList()}}{
-Converts the map to a list.
+Converts the map to a named list.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$toList()}\if{html}{\out{</div>}}
 }
@@ -441,7 +433,7 @@ map$at("x", stop_if_not_found = FALSE)
 \if{html}{\out{<a id="method-extract"></a>}}
 \if{latex}{\out{\hypertarget{method-extract}{}}}
 \subsection{Method \code{extract()}}{
-Extract submap.
+Extract a submap.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys, inplace = FALSE, bydeleting = FALSE)}\if{html}{\out{</div>}}
 }
@@ -472,39 +464,9 @@ A \code{umapR} object if \code{inplace=FALSE},
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
 map$extract(c("a", "c"))
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-submap"></a>}}
-\if{latex}{\out{\hypertarget{method-submap}{}}}
-\subsection{Method \code{submap()}}{
-Extract submap.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$submap(keys)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{keys}}{some keys, a character vector; those which do not belong to 
-the keys of the reference map will be ignored}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{umapR} object.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{map <- umapR$new(
-  keys = c("a", "b", "c"), 
-  values = list(c(1, 2), c(3, 4, 5), c(6, 7))
-)
-map$submap(c("a", "c"))
+map
+map$extract(c("a", "c"), inplace = TRUE)
+map
 }
 \if{html}{\out{</div>}}
 
