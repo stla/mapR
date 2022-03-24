@@ -73,12 +73,12 @@ class uMAPR {
     return out;
   }
   
-  void insert(std::string key, SEXP value) {
+  void insert(std::string key, Rcpp::RObject value) {
     umap.emplace(key, value);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 
-  void assign(std::string key, SEXP value) {
+  void assign(std::string key, Rcpp::RObject value) {
     umap.insert_or_assign(key, value);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
