@@ -8,14 +8,15 @@ class uMAPR {
  public:
   uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : umap(umapNew(keys_, values_)),
-        ptr(Rcpp::XPtr<umapR>(new umapR(umap))) {}
-  uMAPR(Rcpp::XPtr<umapR> ptr_) : umap(*ptr_), ptr(ptr_) {}
+        ptr(Rcpp::XPtr<umapR>(&umap)) {}
+  uMAPR(Rcpp::XPtr<umapR> ptr_)
+      : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap)) {}
 
   Rcpp::XPtr<umapR> ptr;
 
   unsigned size() { return umap.size(); }
 
-  SEXP at(std::string key) {
+  Rcpp::RObject at(std::string key) {
     umapR::iterator it = umap.find(key);
     if(it != umap.end()) {
       return it->second;
@@ -44,7 +45,7 @@ class uMAPR {
     }
     return out;
   }
-  
+
   Rcpp::List values() {
     const unsigned s = umap.size();
     Rcpp::List out(s);
@@ -87,9 +88,10 @@ class uMAPR {
     }
     return Rcpp::XPtr<umapR>(new umapR(submap));
   }
-  
-  void merge(Rcpp::XPtr<umapR> umap2) {
-    umap.merge(*umap2);
+
+  void merge(Rcpp::XPtr<umapR> umap2ptr) {
+    umapR umap2 = *(umap2ptr.get());
+    umap.merge(umap2);
     // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
   }
 };

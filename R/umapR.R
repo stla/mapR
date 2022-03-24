@@ -31,6 +31,7 @@ umapR <- R6Class(
     #' @param duplicated the action to perform for duplicated keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
+    #' @param ptr an external pointer; this is for internal use only
     #'
     #' @return A \code{umapR} object.
     #'
@@ -58,6 +59,7 @@ umapR <- R6Class(
       if(!is.null(ptr)){
         UMAPR <- new("uMAPR", ptr)
         private[[".map"]] <- UMAPR
+        invisible(NULL)
       }else{
         duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
         if(checks){
@@ -87,6 +89,7 @@ umapR <- R6Class(
         }
         UMAPR <- new("uMAPR", keys, values)
         private[[".map"]] <- UMAPR
+        invisible(NULL)
         # private[[".ptr"]] <- UMAPR$ptr
       }
     },
@@ -211,8 +214,11 @@ umapR <- R6Class(
     #'
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
+    #' @param inplace Boolean, whether to update the reference map or 
+    #'   to return a new map
     #'
-    #' @return A \code{umapR} object.
+    #' @return A \code{umapR} object if \code{inplace=FALSE}, 
+    #'   nothing otherwise.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -220,10 +226,26 @@ umapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
     #' map$extract(c("a", "c"))
-    extract = function(keys){
+    extract = function(keys, inplace = FALSE){
       stopifnot(isCharacterVector(keys))
-      ptr <- private[[".map"]]$extract(keys) 
-      umapR$new(ptr = ptr)
+      stopifnot(isBoolean(inplace))
+      if(length(keys) == 0L){
+        if(inplace){
+          private[[".map"]] <- new("uMAPR", character(0L), list())
+          invisible(NULL)
+        }else{
+          umapR$new(character(0L), list(), checks = FALSE)
+        }
+      }else{
+        ptr <- private[[".map"]]$extract(keys) 
+        if(inplace){
+          UMAPR <- new("uMAPR", ptr)
+          private[[".map"]] <- UMAPR
+          invisible(NULL)
+        }else{
+          umapR$new(ptr = ptr) 
+        }
+      }
     },
     
     #' @description Extract submap.
@@ -290,6 +312,7 @@ umapR <- R6Class(
       }else{
         private[[".map"]]$insert(key, value)
       }
+      invisible(NULL)
     },
     
     #' @description Erase some entries.
@@ -314,6 +337,7 @@ umapR <- R6Class(
       }else if(length(keys) >= 2L){
         private[[".map"]]$merase(keys)
       }
+      invisible(NULL)
     },
     
     #' @description Merge with another map.
@@ -373,13 +397,16 @@ umapR <- R6Class(
           }
           UMAPR <- new("uMAPR", keys, values)
           private[[".map"]] <- UMAPR
+          invisible(NULL)
         }else{
           .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
           private[[".map"]]$merge(.map2$ptr)
+          invisible(NULL)
         }
       }else{
         .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
         private[[".map"]]$merge(.map2$ptr)
+        invisible(NULL)
       }
     },
     
@@ -396,7 +423,8 @@ umapR <- R6Class(
     #' naive_copy$erase("a")
     #' map
     copy = function(){
-      umapR$new(self$keys(), self$values(), checks = FALSE)
+      umapR$new(ptr = private[[".map"]][["ptr"]])
+      #umapR$new(self$keys(), self$values(), checks = FALSE)
     }
     
   )

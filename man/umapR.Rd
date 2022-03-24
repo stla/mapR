@@ -215,7 +215,7 @@ map
 \subsection{Method \code{new()}}{
 Creates a new \code{umapR} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, duplicated = "drop", checks = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -230,6 +230,8 @@ Creates a new \code{umapR} object.
 \code{"drop"}, \code{"join"}, or \code{"separate"}}
 
 \item{\code{checks}}{Boolean, whether to check \code{keys} and \code{values}}
+
+\item{\code{ptr}}{an external pointer; this is for internal use only}
 }
 \if{html}{\out{</div>}}
 }
@@ -441,7 +443,7 @@ map$at("x", stop_if_not_found = FALSE)
 \subsection{Method \code{extract()}}{
 Extract submap.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys, inplace = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -449,11 +451,15 @@ Extract submap.
 \describe{
 \item{\code{keys}}{some keys, a character vector; those which do not belong to 
 the keys of the reference map will be ignored}
+
+\item{\code{inplace}}{Boolean, whether to update the reference map or 
+to return a new map}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \code{umapR} object.
+A \code{umapR} object if \code{inplace=FALSE}, 
+  nothing otherwise.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

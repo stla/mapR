@@ -32,6 +32,7 @@ omapR <- R6Class(
     #' @param duplicated the action to perform for duplicated keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
+    #' @param ptr an external pointer; this is for internal use only
     #'
     #' @return An \code{omapR} object.
     #'
@@ -55,31 +56,37 @@ omapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   duplicated = "separate"
     #' )
-    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
-      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
-      if(checks){
-        keys <- as.character(keys)
-        if(any(is.na(keys))){
-          stop("Keys cannot contain missing values.")
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL){
+      if(!is.null(ptr)){
+        OMAPR <- new("oMAPR", ptr)
+        private[[".map"]] <- OMAPR
+      }else{
+        duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+        if(checks){
+          keys <- as.character(keys)
+          if(any(is.na(keys))){
+            stop("Keys cannot contain missing values.")
+          }
+          stopifnot(
+            is.list(values),
+            length(keys) == length(values)
+          )
         }
-        stopifnot(
-          is.list(values),
-          length(keys) == length(values)
-        )
-      }
-      if(duplicated != "drop" && anyDuplicated(keys)){
-        if(duplicated == "join"){
-          splt <- split(values, keys)
-          values <- lapply(splt, function(x){
-            if(length(x) == 1L) x[[1L]] else x
-          })
-          keys <- names(values)
-        }else{ # duplicated == "separate"
-          keys <- make.unique2(keys)
+        if(duplicated != "drop" && anyDuplicated(keys)){
+          if(duplicated == "join"){
+            splt <- split(values, keys)
+            values <- lapply(splt, function(x){
+              if(length(x) == 1L) x[[1L]] else x
+            })
+            keys <- names(values)
+          }else{ # duplicated == "separate"
+            keys <- make.unique2(keys)
+          }
         }
+        OMAPR <- new("oMAPR", keys, values)
+        private[[".map"]] <- OMAPR
       }
-      OMAPR <- new("oMAPR", keys, values)
-      private[[".map"]] <- OMAPR
+      invisible(NULL)
     },
     
     #' @description Show instance of a \code{omapR} object.
@@ -312,6 +319,7 @@ omapR <- R6Class(
       }else{
         private[[".map"]]$insert(key, value)
       }
+      invisible(NULL)
     },
     
     #' @description Erase some entries of the reference map.
@@ -336,6 +344,7 @@ omapR <- R6Class(
       }else if(length(keys) >= 2L){
         private[[".map"]]$merase(keys)
       }
+      invisible(NULL)
     },
     
     #' @description Merge the reference map with another map.
@@ -399,9 +408,11 @@ omapR <- R6Class(
           .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
           private[[".map"]]$merge(.map2$ptr)
         }
+        invisible(NULL)
       }else{
         .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
         private[[".map"]]$merge(.map2$ptr)
+        invisible(NULL)
       }
     },
     
@@ -421,7 +432,7 @@ omapR <- R6Class(
     #' naive_copy$erase("a")
     #' map
     copy = function(){
-      omapR$new(self$keys(), self$values(), checks = FALSE)
+      omapR$new(ptr = private[[".map"]][["ptr"]])
     }
     
   )
