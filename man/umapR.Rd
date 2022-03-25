@@ -137,6 +137,50 @@ map$erase("a")
 map
 map$erase(c("b", "c"))
 map
+
+## ------------------------------------------------
+## Method `umapR$merge`
+## ------------------------------------------------
+
+map1 <- umapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map2 <- umapR$new(
+  keys = c("c", "d"), values = list(c(9, 8), c(7, 6))
+)
+map1$merge(map2)
+map1
+
+# `duplicated` example ####
+map1 <- umapR$new(
+  keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
+)
+map1_copy1 <- map1$copy()
+map1_copy2 <- map1$copy()
+map1_copy3 <- map1$copy()
+map2 <- umapR$new(
+  keys = c("a", "d"), values = list(c(9, 8), c(7, 6))
+)
+map1_copy1$merge(map2)
+map1_copy1
+
+map1_copy2$merge(map2, duplicated = "join")
+map1_copy2
+
+map1_copy3$merge(map2, duplicated = "separate")
+map1_copy3
+
+## ------------------------------------------------
+## Method `umapR$copy`
+## ------------------------------------------------
+
+map <- umapR$new(c("a", "b"), list(c(1,2), c(FALSE, TRUE)))
+true_copy <- map$copy()
+true_copy$erase("a")
+map
+naive_copy <- map
+naive_copy$erase("a")
+map
 }
 \section{Methods}{
 \subsection{Public methods}{

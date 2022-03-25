@@ -4,6 +4,15 @@
 
 #include "oMAPR.h"
 
+void finalizer_of_omapr( oMAPR* ptr ){
+  Rcpp::Rcout << "finalizer of oMAPR has been called\n";
+  Rcpp::XPtr<omapR> ptrptr = ptr->ptr;
+  delete ptrptr.get();
+  delete ptr;
+}
+
+
+
 RCPP_MODULE(class_oMAPR) {
   using namespace Rcpp;
 
@@ -25,5 +34,6 @@ RCPP_MODULE(class_oMAPR) {
       .method("merase", &oMAPR::merase)
       .method("merge", &oMAPR::merge)
       .method("keys", &oMAPR::keys)
-      .method("values", &oMAPR::values);
+      .method("values", &oMAPR::values)
+      .finalizer(&finalizer_of_omapr);;
 }

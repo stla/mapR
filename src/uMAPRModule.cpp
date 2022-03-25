@@ -4,9 +4,12 @@
 
 #include "uMAPR.h"
 
-// void finalizer_of_umapr( uMAPR* ptr ){
-//   Rcpp::Rcout << "finalizer has been called\n";
-// }
+void finalizer_of_umapr( uMAPR* ptr ){
+  Rcpp::Rcout << "finalizer of uMAPR has been called\n";
+  Rcpp::XPtr<umapR> ptrptr = ptr->ptr;
+  delete ptrptr.get();
+  delete ptr;
+}
 
 RCPP_MODULE(class_uMAPR) {
   using namespace Rcpp;
@@ -32,5 +35,6 @@ RCPP_MODULE(class_uMAPR) {
       .method("merge", &uMAPR::merge)
       .method("keys", &uMAPR::keys)
       .method("values", &uMAPR::values)
-      .method("toList", &uMAPR::toList);
+      .method("toList", &uMAPR::toList)
+      .finalizer(&finalizer_of_umapr);
 }
