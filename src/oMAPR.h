@@ -9,6 +9,7 @@ class oMAPR {
         ptr(Rcpp::XPtr<omapR>(&omap, true)) {} //new omapR(omap)
   oMAPR(Rcpp::XPtr<omapR> ptr_)
      : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}
+  ~oMAPR() { delete ptr.get(); }
    
   Rcpp::XPtr<omapR> ptr;
 

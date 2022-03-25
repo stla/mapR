@@ -11,7 +11,8 @@ class uMAPR {
         ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
   uMAPR(Rcpp::XPtr<umapR> ptr_)
       : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
-
+  ~uMAPR() { delete ptr.get(); }
+  
   Rcpp::XPtr<umapR> ptr;
 
   unsigned size() { return umap.size(); }
