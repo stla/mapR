@@ -8,9 +8,9 @@ class uMAPR {
  public:
   uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : umap(umapNew(keys_, values_)),
-        ptr(Rcpp::XPtr<umapR>(&umap)) {}
+        ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
   uMAPR(Rcpp::XPtr<umapR> ptr_)
-      : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap)) {}
+      : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
 
   Rcpp::XPtr<umapR> ptr;
 
@@ -102,7 +102,7 @@ class uMAPR {
         std::pair<umapR::iterator, bool> x = submap.emplace(key, it->second);
       }
     }
-    return Rcpp::XPtr<umapR>(new umapR(submap));
+    return Rcpp::XPtr<umapR>(new umapR(submap), true);
   }
 
   void extract_inplace(Rcpp::StringVector keys) {
@@ -130,7 +130,7 @@ class uMAPR {
     //     submap.erase(key);
     //   }
     // }
-    return Rcpp::XPtr<umapR>(new umapR(submap)); 
+    return Rcpp::XPtr<umapR>(new umapR(submap), true); 
   }
 
   void extract_by_erasing_inplace(Rcpp::StringVector keys){

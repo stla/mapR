@@ -36,5 +36,5 @@ RCPP_MODULE(class_uMAPR) {
       .method("keys", &uMAPR::keys)
       .method("values", &uMAPR::values)
       .method("toList", &uMAPR::toList)
-      .finalizer(&finalizer_of_umapr);
+      ;
 }

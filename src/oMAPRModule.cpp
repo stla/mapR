@@ -6,9 +6,15 @@
 
 void finalizer_of_omapr( oMAPR* ptr ){
   Rcpp::Rcout << "finalizer of oMAPR has been called\n";
-  Rcpp::XPtr<omapR> ptrptr = ptr->ptr;
-  delete ptrptr.get();
-  delete ptr;
+  if(ptr){
+    Rcpp::Rcout << "if ptr\n";
+    omapR* ptrptr = (ptr->ptr).get();
+    if(ptrptr){
+      Rcpp::Rcout << "if ptrptr\n";
+      delete ptrptr;
+    }
+    delete ptr;
+  }
 }
 
 
@@ -34,6 +40,5 @@ RCPP_MODULE(class_oMAPR) {
       .method("merase", &oMAPR::merase)
       .method("merge", &oMAPR::merge)
       .method("keys", &oMAPR::keys)
-      .method("values", &oMAPR::values)
-      .finalizer(&finalizer_of_omapr);;
+      .method("values", &oMAPR::values);
 }

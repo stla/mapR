@@ -6,9 +6,9 @@ class oMAPR {
  public:
   oMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : omap(omapNew(keys_, values_)),
-        ptr(Rcpp::XPtr<omapR>(&omap)) {} //new omapR(omap)
+        ptr(Rcpp::XPtr<omapR>(&omap, true)) {} //new omapR(omap)
   oMAPR(Rcpp::XPtr<omapR> ptr_)
-     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap)) {}
+     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}
    
   Rcpp::XPtr<omapR> ptr;
 
