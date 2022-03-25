@@ -15,6 +15,7 @@ class uMAPR {
       : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
   ~uMAPR() { 
     Rcpp::Rcout << "uMAPR deconstructor has been called\n";
+    //ptr.release();
     umap.clear();
     //ptr.release();
     // Rcpp::Rcout << umap.size() << "\n";
@@ -105,15 +106,17 @@ class uMAPR {
 
   Rcpp::XPtr<umapR> extract(Rcpp::StringVector keys) {
     umapR submap;
+    // umapR* submapptr = &submap;
     for(Rcpp::String key : keys) {
       umapR::iterator it = umap.find(key);
       if(it != umap.end()) {
         std::pair<umapR::iterator, bool> x = submap.emplace(key, it->second);
       }
     }
-    umapR* submapptr = new umapR(submap);
+    // std::unique_ptr<umapR> submapptr(new umapR(submap));
+    umapR* submapptr(new umapR(submap)); //&submap;
     Rcpp::XPtr<umapR> out = Rcpp::XPtr<umapR>(submapptr, true);
-    delete submapptr;
+//    delete submapptr;
     return out;//new umapR(submap), true);
   }
 

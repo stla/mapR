@@ -17,6 +17,7 @@ class oMAPR {
       //ptr.release();
     }
     omap.clear();
+    //ptr.release();
     // Rcpp::Rcout << omap.size() << "\n";
     // delete ptr.get(); 
     // Rcpp::Rcout << "oMAPR deconstructor success\n";
