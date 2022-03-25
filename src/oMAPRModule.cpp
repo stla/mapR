@@ -27,7 +27,7 @@ RCPP_MODULE(class_oMAPR) {
       .constructor<Rcpp::StringVector, Rcpp::List>()
       .constructor<Rcpp::XPtr<omapR>>()
 
-      .field_readonly("ptr", &oMAPR::ptr)
+      .field("ptr", &oMAPR::ptr)
 
       .method("size", &oMAPR::size)
       .method("at", &oMAPR::at)

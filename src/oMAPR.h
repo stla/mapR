@@ -1,17 +1,27 @@
 omapR omapNew(Rcpp::StringVector, Rcpp::List);
 
 class oMAPR {
-  omapR omap;
 
  public:
-  oMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
-      : omap(omapNew(keys_, values_)),
-        ptr(Rcpp::XPtr<omapR>(&omap, true)) {} //new omapR(omap)
-  oMAPR(Rcpp::XPtr<omapR> ptr_)
-     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}
-  ~oMAPR() { delete ptr.get(); }
+   omapR omap;
+   Rcpp::XPtr<omapR> ptr;
+   oMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
+     : omap(omapNew(keys_, values_)),
+       ptr(Rcpp::XPtr<omapR>(&omap, true)) {}
+   oMAPR(Rcpp::XPtr<omapR> ptr_) 
+     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}   
+  ~oMAPR() { 
+    Rcpp::Rcout << "oMAPR deconstructor has been called\n";
+    if(ptr.get()){
+      Rcpp::Rcout << "ptr.get\n";
+      //ptr.release();
+    }
+    omap.clear();
+    // Rcpp::Rcout << omap.size() << "\n";
+    // delete ptr.get(); 
+    // Rcpp::Rcout << "oMAPR deconstructor success\n";
+  }
    
-  Rcpp::XPtr<omapR> ptr;
 
   unsigned size() { return omap.size(); }
 

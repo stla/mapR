@@ -19,7 +19,7 @@ RCPP_MODULE(class_uMAPR) {
       .constructor<Rcpp::StringVector, Rcpp::List>()
       .constructor<Rcpp::XPtr<umapR>>()
 
-      .field_readonly("ptr", &uMAPR::ptr)
+      .field("ptr", &uMAPR::ptr)
 
       .method("size", &uMAPR::size)
       .method("at", &uMAPR::at)

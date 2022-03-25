@@ -3,18 +3,26 @@ umapR umapNew(Rcpp::StringVector, Rcpp::List);
 class uMAPR {
   // std::vector<std::string> keys;
   // Rcpp::List values;
-  umapR umap;
+  // umapR umap;
 
  public:
-  uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
+   umapR umap;
+   Rcpp::XPtr<umapR> ptr;
+   uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : umap(umapNew(keys_, values_)),
         ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
   uMAPR(Rcpp::XPtr<umapR> ptr_)
       : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
-  ~uMAPR() { delete ptr.get(); }
+  ~uMAPR() { 
+    Rcpp::Rcout << "uMAPR deconstructor has been called\n";
+    umap.clear();
+    //ptr.release();
+    // Rcpp::Rcout << umap.size() << "\n";
+    // Rcpp::Rcout << (umap.find("a") != umap.end()) << "\n";
+    // delete ptr.get(); 
+    // Rcpp::Rcout << "uMAPR deconstructor success\n";
+  }
   
-  Rcpp::XPtr<umapR> ptr;
-
   unsigned size() { return umap.size(); }
 
   Rcpp::RObject at(std::string key) {
@@ -103,7 +111,10 @@ class uMAPR {
         std::pair<umapR::iterator, bool> x = submap.emplace(key, it->second);
       }
     }
-    return Rcpp::XPtr<umapR>(new umapR(submap), true);
+    umapR* submapptr = new umapR(submap);
+    Rcpp::XPtr<umapR> out = Rcpp::XPtr<umapR>(submapptr, true);
+    delete submapptr;
+    return out;//new umapR(submap), true);
   }
 
   void extract_inplace(Rcpp::StringVector keys) {
@@ -131,7 +142,8 @@ class uMAPR {
     //     submap.erase(key);
     //   }
     // }
-    return Rcpp::XPtr<umapR>(new umapR(submap), true); 
+    delete submapptr;
+    return Rcpp::XPtr<umapR>(&submap, true);//(new umapR(submap), true); 
   }
 
   void extract_by_erasing_inplace(Rcpp::StringVector keys){
