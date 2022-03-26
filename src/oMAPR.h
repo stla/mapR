@@ -11,12 +11,12 @@ class oMAPR {
    oMAPR(Rcpp::XPtr<omapR> ptr_) 
      : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}   
   ~oMAPR() { 
-    Rcpp::Rcout << "oMAPR deconstructor has been called\n";
-    if(ptr.get()){
-      Rcpp::Rcout << "ptr.get\n";
-      //ptr.release();
-    }
-    omap.clear();
+    Rcpp::Rcout << "2) oMAPR deconstructor has been called\n";
+    // if(ptr.get()){
+    //   Rcpp::Rcout << "ptr.get\n";
+    //   //ptr.release();
+    // }
+    // omap.clear();
     //ptr.release();
     // Rcpp::Rcout << omap.size() << "\n";
     // delete ptr.get(); 

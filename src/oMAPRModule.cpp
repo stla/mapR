@@ -4,20 +4,25 @@
 
 #include "oMAPR.h"
 
-void finalizer_of_omapr( oMAPR* ptr ){
+// void finalizer_of_omapr( oMAPR* oMAPRptr ){
+//   Rcpp::Rcout << "finalizer of oMAPR has been called\n";
+//   omapR omap = oMAPRptr->omap;
+//   // Rcpp::XPtr<omapR> ptr = oMAPRptr->ptr;
+//   // ptr.release();
+//   omap.clear();
+//   delete oMAPRptr;
+// }
+
+void fff(oMAPR* ptr){
   Rcpp::Rcout << "finalizer of oMAPR has been called\n";
-  if(ptr){
-    Rcpp::Rcout << "if ptr\n";
-    omapR* ptrptr = (ptr->ptr).get();
-    if(ptrptr){
-      Rcpp::Rcout << "if ptrptr\n";
-      delete ptrptr;
-    }
-    delete ptr;
-  }
+  //oMAPR oMAPRx = *ptr; //(oMAPR*)(R_ExternalPtrAddr(ptr));
+  //Rcpp::XPtr<omapR> oMAPRptr = ptr->ptr;//s= Rcpp::XPtr<omapR>((omapR*)(R_ExternalPtrAddr(ptr->ptr)), true);
+  ptr->omap.clear();
+  Rcpp::Rcout << "xxx\n";
+  //R_ClearExternalPtr(oMAPRptr);
+  //delete ptr;
 }
-
-
+  
 
 RCPP_MODULE(class_oMAPR) {
   using namespace Rcpp;
@@ -40,5 +45,6 @@ RCPP_MODULE(class_oMAPR) {
       .method("merase", &oMAPR::merase)
       .method("merge", &oMAPR::merge)
       .method("keys", &oMAPR::keys)
-      .method("values", &oMAPR::values);
+      .method("values", &oMAPR::values)
+      .finalizer(&fff);
 }

@@ -14,9 +14,9 @@ class uMAPR {
   uMAPR(Rcpp::XPtr<umapR> ptr_)
       : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
   ~uMAPR() { 
-    Rcpp::Rcout << "uMAPR deconstructor has been called\n";
+    Rcpp::Rcout << "2) uMAPR deconstructor has been called\n";
     //ptr.release();
-    umap.clear();
+    //umap.clear();
     //ptr.release();
     // Rcpp::Rcout << umap.size() << "\n";
     // Rcpp::Rcout << (umap.find("a") != umap.end()) << "\n";

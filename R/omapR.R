@@ -382,8 +382,8 @@ omapR <- R6Class(
     #' map1_copy2$merge(map2, duplicated = "join")
     #' map1_copy2
     #' 
-    #' map1_copy3$merge(map2, duplicated = "separate")
-    #' map1_copy3
+    #' #map1_copy3$merge(map2, duplicated = "separate")
+    #' #map1_copy3
     merge = function(map, duplicated = "drop"){
       stopifnot(inherits(map, "omapR"))
       duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
