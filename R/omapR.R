@@ -9,6 +9,7 @@
 #' @export
 #' @importFrom R6 R6Class
 #' @importFrom methods new
+#' @importFrom maybe just nothing
 omapR <- R6Class(
   
   "omapR",
@@ -184,6 +185,8 @@ omapR <- R6Class(
     #' @return A \code{maybe} value, either the value corresponding to the key 
     #'   as a 'Just' \code{maybe} value if the key is found, otherwise the 
     #'   'Nothing' \code{maybe} value.
+    #' 
+    #' @seealso \code{\link{from_just}}
     #'
     #' @examples
     #' map <- omapR$new(
@@ -300,15 +303,19 @@ omapR <- R6Class(
     #'
     #' @param n index, a positive integer
     #' @param stop_if_too_large a Boolean value, whether to stop if \code{n}
-    #'   is too large, or to return \code{NaN}
+    #'   is too large, or to use \code{maybe} values
     #'
-    #' @return A list with the key and the value at index \code{n}.
+    #' @return A list with the key and the value at index \code{n} if 
+    #'   \code{stop_if_too_large=TRUE} and \code{n} is not too large, otherwise 
+    #'   a \code{maybe} value: either this list wrapped in a 'Just' container, 
+    #'   or 'Nothing'.
     #'
     #' @examples
     #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$nth(2)
+    #' map$nth(2, stop_if_too_large = FALSE)
     #' map$nth(9, stop_if_too_large = FALSE)
     nth = function(n, stop_if_too_large = TRUE){
       stopifnot(isPositiveInteger(n))
@@ -317,9 +324,9 @@ omapR <- R6Class(
         private[[".map"]]$nth(as.integer(n) - 1L)
       }else{
         tryCatch({
-          private[[".map"]]$nth(as.integer(n) - 1L)
+          just(private[[".map"]]$nth(as.integer(n) - 1L))
         }, error = function(e){
-          NaN
+          nothing()
         })
       }
     },

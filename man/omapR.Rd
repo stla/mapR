@@ -135,6 +135,7 @@ map <- omapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$nth(2)
+map$nth(2, stop_if_too_large = FALSE)
 map$nth(9, stop_if_too_large = FALSE)
 
 ## ------------------------------------------------
@@ -211,6 +212,9 @@ map
 naive_copy <- map
 naive_copy$erase("a")
 map
+}
+\seealso{
+\code{\link{from_just}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -588,12 +592,15 @@ Returns the n-th entry of the reference map.
 \item{\code{n}}{index, a positive integer}
 
 \item{\code{stop_if_too_large}}{a Boolean value, whether to stop if \code{n}
-is too large, or to return \code{NaN}}
+is too large, or to use \code{maybe} values}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list with the key and the value at index \code{n}.
+A list with the key and the value at index \code{n} if 
+  \code{stop_if_too_large=TRUE} and \code{n} is not too large, otherwise 
+  a \code{maybe} value: either this list wrapped in a 'Just' container, 
+  or 'Nothing'.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -601,6 +608,7 @@ A list with the key and the value at index \code{n}.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$nth(2)
+map$nth(2, stop_if_too_large = FALSE)
 map$nth(9, stop_if_too_large = FALSE)
 }
 \if{html}{\out{</div>}}
