@@ -1,3 +1,14 @@
+#' @importFrom maybe is_just
+#' @noRd
+#' @export
+print.maybe <- function (x, ...){
+  if(is_just(x)){
+    cat("Just\n")
+    print(x[["content"]], ...)
+  }
+  else cat("Nothing\n")
+}
+
 #' @title Unwraps a 'Just' value
 #' @description Unwraps the content of a 'Just' \code{maybe} value.
 #'
