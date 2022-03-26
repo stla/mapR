@@ -17,8 +17,12 @@ umapR <- R6Class(
   cloneable = FALSE,
   
   private = list(
-    # .ptr = NULL,
-    .map = NULL
+    .map = NULL,
+    .ptrinit = function(ptr){
+      map <- umapR$new(character(0L), list(), checks = FALSE)
+      map[[".__enclos_env__"]][["private"]][[".map"]] <- new("uMAPR", ptr)
+      map
+    }
   ),
   
   public = list(
@@ -31,7 +35,6 @@ umapR <- R6Class(
     #' @param duplicated the action to perform for duplicated keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
-    #' @param ptr an external pointer; this is for internal use only
     #'
     #' @return A \code{umapR} object.
     #'
@@ -55,43 +58,37 @@ umapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   duplicated = "separate"
     #' )
-    initialize = function(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL){
-      if(!is.null(ptr)){
-        UMAPR <- new("uMAPR", ptr)
-        private[[".map"]] <- UMAPR
-        invisible(NULL)
-      }else{
-        duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
-        if(checks){
-          keys <- as.character(keys)
-          if(any(is.na(keys))){
-            stop("Keys cannot contain missing values.")
-          }
-          stopifnot(
-            is.list(values),
-            length(keys) == length(values)
-          )
-          # modes <- vapply(values, mode, character(1L))
-          # if(any(modes != "numeric")){
-          #   stop("The values must be given as a list of numeric vectors.")
-          # }
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+      if(checks){
+        keys <- as.character(keys)
+        if(any(is.na(keys))){
+          stop("Keys cannot contain missing values.")
         }
-        if(duplicated != "drop" && anyDuplicated(keys)){
-          if(duplicated == "join"){
-            splt <- split(values, keys)
-            values <- lapply(splt, function(x){
-              if(length(x) == 1L) x[[1L]] else x#do.call(c, lapply(x, list))
-            })
-            keys <- names(values)
-          }else{ # duplicated == "separate"
-            keys <- make.unique2(keys)
-          }
-        }
-        UMAPR <- new("uMAPR", keys, values)
-        private[[".map"]] <- UMAPR
-        invisible(NULL)
-        # private[[".ptr"]] <- UMAPR$ptr
+        stopifnot(
+          is.list(values),
+          length(keys) == length(values)
+        )
+        # modes <- vapply(values, mode, character(1L))
+        # if(any(modes != "numeric")){
+        #   stop("The values must be given as a list of numeric vectors.")
+        # }
       }
+      if(duplicated != "drop" && anyDuplicated(keys)){
+        if(duplicated == "join"){
+          splt <- split(values, keys)
+          values <- lapply(splt, function(x){
+            if(length(x) == 1L) x[[1L]] else x#do.call(c, lapply(x, list))
+          })
+          keys <- names(values)
+        }else{ # duplicated == "separate"
+          keys <- make.unique2(keys)
+        }
+      }
+      UMAPR <- new("uMAPR", keys, values)
+      private[[".map"]] <- UMAPR
+      invisible(NULL)
+      # private[[".ptr"]] <- UMAPR$ptr
     },
     
     #' @description Show instance of a \code{umapR} object.
@@ -136,7 +133,7 @@ umapR <- R6Class(
     keys = function(){
       private[[".map"]]$keys()
     },
-
+    
     #' @description Get all values.
     #'
     #' @return The values, a list of R objects.
@@ -258,7 +255,7 @@ umapR <- R6Class(
             invisible(NULL)
           }else{
             ptr <- private[[".map"]]$extract_by_erasing(keys)
-            umapR$new(ptr = ptr)
+            private[[".ptrinit"]](ptr)
           }
         }else{
           # ptr <- private[[".map"]]$extract(keys) 
@@ -269,12 +266,12 @@ umapR <- R6Class(
             invisible(NULL)
           }else{
             ptr <- private[[".map"]]$extract(keys)
-            umapR$new(ptr = ptr) 
+            private[[".ptrinit"]](ptr)
           }
         }
       }
     },
-
+    
     #' @description Checks whether a key exists in the reference map.
     #'
     #' @param key a key (string)
@@ -431,7 +428,7 @@ umapR <- R6Class(
     #' naive_copy$erase("a")
     #' map
     copy = function(){
-      umapR$new(ptr = private[[".map"]][["ptr"]])
+      private[[".ptrinit"]](private[[".map"]][["ptr"]])
       #umapR$new(self$keys(), self$values(), checks = FALSE)
     }
     

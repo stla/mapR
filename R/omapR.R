@@ -15,11 +15,17 @@ omapR <- R6Class(
   
   lock_class = TRUE,
   
+  lock_objects = TRUE, 
+  
   cloneable = FALSE,
   
   private = list(
-    # .ptr = NULL,
-    .map = NULL
+    .map = NULL,
+    .ptrinit = function(ptr){
+      map <- omapR$new(character(0L), list(), checks = FALSE)
+      map[[".__enclos_env__"]][["private"]][[".map"]] <- new("oMAPR", ptr)
+      map
+    }
   ),
   
   public = list(
@@ -32,7 +38,6 @@ omapR <- R6Class(
     #' @param duplicated the action to perform for duplicated keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #' @param checks Boolean, whether to check \code{keys} and \code{values}
-    #' @param ptr an external pointer; this is for internal use only
     #'
     #' @return An \code{omapR} object.
     #'
@@ -56,36 +61,31 @@ omapR <- R6Class(
     #'   values = list(c(1, 2), c(3, 4), c(5, 6)),
     #'   duplicated = "separate"
     #' )
-    initialize = function(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL){
-      if(!is.null(ptr)){
-        OMAPR <- new("oMAPR", ptr)
-        private[[".map"]] <- OMAPR
-      }else{
-        duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
-        if(checks){
-          keys <- as.character(keys)
-          if(any(is.na(keys))){
-            stop("Keys cannot contain missing values.")
-          }
-          stopifnot(
-            is.list(values),
-            length(keys) == length(values)
-          )
+    initialize = function(keys, values, duplicated = "drop", checks = TRUE){
+      duplicated <- match.arg(duplicated, c("drop", "join", "separate"))
+      if(checks){
+        keys <- as.character(keys)
+        if(any(is.na(keys))){
+          stop("Keys cannot contain missing values.")
         }
-        if(duplicated != "drop" && anyDuplicated(keys)){
-          if(duplicated == "join"){
-            splt <- split(values, keys)
-            values <- lapply(splt, function(x){
-              if(length(x) == 1L) x[[1L]] else x
-            })
-            keys <- names(values)
-          }else{ # duplicated == "separate"
-            keys <- make.unique2(keys)
-          }
-        }
-        OMAPR <- new("oMAPR", keys, values)
-        private[[".map"]] <- OMAPR
+        stopifnot(
+          is.list(values),
+          length(keys) == length(values)
+        )
       }
+      if(duplicated != "drop" && anyDuplicated(keys)){
+        if(duplicated == "join"){
+          splt <- split(values, keys)
+          values <- lapply(splt, function(x){
+            if(length(x) == 1L) x[[1L]] else x
+          })
+          keys <- names(values)
+        }else{ # duplicated == "separate"
+          keys <- make.unique2(keys)
+        }
+      }
+      OMAPR <- new("oMAPR", keys, values)
+      private[[".map"]] <- OMAPR
       invisible(NULL)
     },
     
@@ -272,7 +272,7 @@ omapR <- R6Class(
             invisible(NULL)
           }else{
             ptr <- private[[".map"]]$extract_by_erasing(keys)
-            omapR$new(ptr = ptr)
+            private[[".ptrinit"]](ptr)
           }
         }else{
           if(inplace){
@@ -280,7 +280,7 @@ omapR <- R6Class(
             invisible(NULL)
           }else{
             ptr <- private[[".map"]]$extract(keys)
-            omapR$new(ptr = ptr) 
+            private[[".ptrinit"]](ptr)
           }
         }
       }
@@ -474,7 +474,7 @@ omapR <- R6Class(
     #' naive_copy$erase("a")
     #' map
     copy = function(){
-      omapR$new(ptr = private[[".map"]][["ptr"]])
+      private[[".ptrinit"]](private[[".map"]][["ptr"]])
     }
     
   )

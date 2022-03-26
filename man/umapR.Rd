@@ -212,7 +212,7 @@ map
 \subsection{Method \code{new()}}{
 Creates a new \code{umapR} object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, duplicated = "drop", checks = TRUE, ptr = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$new(keys, values, duplicated = "drop", checks = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -227,8 +227,6 @@ Creates a new \code{umapR} object.
 \code{"drop"}, \code{"join"}, or \code{"separate"}}
 
 \item{\code{checks}}{Boolean, whether to check \code{keys} and \code{values}}
-
-\item{\code{ptr}}{an external pointer; this is for internal use only}
 }
 \if{html}{\out{</div>}}
 }
