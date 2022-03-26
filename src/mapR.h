@@ -1,7 +1,7 @@
 #ifndef _MAPRHEADER_
 #define _MAPRHEADER_
 
-#define RCPP_USE_FINALIZE_ON_EXIT
+//#define RCPP_USE_FINALIZE_ON_EXIT
 
 // [[Rcpp::depends(BH)]]
 #include <Rcpp.h>
