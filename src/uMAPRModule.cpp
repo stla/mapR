@@ -5,7 +5,7 @@
 #include "uMAPR.h"
 
 void finalizer_of_umapr(uMAPR* ptr) {
-  Rcpp::Rcout << "finalizer of uMAPR has been called\n";
+  // Rcpp::Rcout << "finalizer of uMAPR has been called\n";
   // Rcpp::XPtr<umapR> ptrptr = ptr->ptr;
   // delete ptrptr.get();
   umapR umap = ptr->umap;
