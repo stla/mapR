@@ -13,16 +13,16 @@
 //   delete oMAPRptr;
 // }
 
-void fff(oMAPR* ptr){
+void fff(oMAPR* ptr) {
   Rcpp::Rcout << "finalizer of oMAPR has been called\n";
-  //oMAPR oMAPRx = *ptr; //(oMAPR*)(R_ExternalPtrAddr(ptr));
-  //Rcpp::XPtr<omapR> oMAPRptr = ptr->ptr;//s= Rcpp::XPtr<omapR>((omapR*)(R_ExternalPtrAddr(ptr->ptr)), true);
+  // oMAPR oMAPRx = *ptr; //(oMAPR*)(R_ExternalPtrAddr(ptr));
+  // Rcpp::XPtr<omapR> oMAPRptr = ptr->ptr;//s=
+  // Rcpp::XPtr<omapR>((omapR*)(R_ExternalPtrAddr(ptr->ptr)), true);
   ptr->omap.clear();
   Rcpp::Rcout << "xxx\n";
-  //R_ClearExternalPtr(oMAPRptr);
-  //delete ptr;
+  // R_ClearExternalPtr(oMAPRptr);
+  // delete ptr;
 }
-  
 
 RCPP_MODULE(class_oMAPR) {
   using namespace Rcpp;

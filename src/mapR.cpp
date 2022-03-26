@@ -5,7 +5,7 @@
 omapR omapNew(Rcpp::StringVector keys, Rcpp::List values) {
   omapR omap;
   for(R_xlen_t i = 0; i < keys.size(); i++) {
-    //SEXP v = values[i];
+    // SEXP v = values[i];
     std::pair<omapR::iterator, bool> x = omap.emplace(keys[i], values[i]);
   }
   return omap;
@@ -14,12 +14,13 @@ omapR omapNew(Rcpp::StringVector keys, Rcpp::List values) {
 umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
   umapR umap;
   for(R_xlen_t i = 0; i < keys.size(); i++) {
-    //SEXP v = values[i];
+    // SEXP v = values[i];
     std::pair<umapR::iterator, bool> x = umap.emplace(keys[i], values[i]);
   }
   return umap;
 }
 
+/*
 std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
   std::vector<std::string> diff(0);
   for(Rcpp::String s : V) {
@@ -29,6 +30,7 @@ std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
   }
   return diff;
 }
+*/
 
 // Rcpp::XPtr<mapR> mapPointer(std::vector<std::string> keys, Rcpp::List values)
 // {
@@ -42,11 +44,7 @@ std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
 //   return ptr;
 // }
 
-
-
 //#include "uMAPR.h"
-
-
 
 // RCPP_MODULE(maprModule) {
 //   using namespace Rcpp;
@@ -76,16 +74,16 @@ std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
 // class MAPRPTR {
 //   Rcpp::XPtr<mapR> mapPTR;
 //   mapR map;
-// 
+//
 //  public:
 //   MAPRPTR(Rcpp::XPtr<mapR> mapPTR_) : mapPTR(mapPTR_), map(*mapPTR_) {}
-// 
-// 
+//
+//
 //   // protected:
 //   //  Rcpp::XPtr<mapR> mapPTR;
 //   //  mapR map;
 // };
-// 
+//
 // RCPP_MODULE(maprptrModule) {
 //   using namespace Rcpp;
 //   class_<MAPRPTR>("MAPRPTR")
