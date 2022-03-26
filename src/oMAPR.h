@@ -9,7 +9,7 @@ class oMAPR {
   oMAPR(Rcpp::XPtr<omapR> ptr_)
       : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, false)) {}
   ~oMAPR() {
-    Rcpp::Rcout << "2) oMAPR deconstructor has been called\n";
+    // Rcpp::Rcout << "2) oMAPR deconstructor has been called\n";
     // if(ptr.get()){
     //   Rcpp::Rcout << "ptr.get\n";
     //   //ptr.release();
