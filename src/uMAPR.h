@@ -10,9 +10,9 @@ class uMAPR {
    Rcpp::XPtr<umapR> ptr;
    uMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
       : umap(umapNew(keys_, values_)),
-        ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
+        ptr(Rcpp::XPtr<umapR>(&umap, false)) {}
   uMAPR(Rcpp::XPtr<umapR> ptr_)
-      : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, true)) {}
+      : umap(*(ptr_.get())), ptr(Rcpp::XPtr<umapR>(&umap, false)) {}
   ~uMAPR() { 
     Rcpp::Rcout << "2) uMAPR deconstructor has been called\n";
     //ptr.release();
@@ -115,7 +115,7 @@ class uMAPR {
     }
     // std::unique_ptr<umapR> submapptr(new umapR(submap));
     umapR* submapptr(new umapR(submap)); //&submap;
-    Rcpp::XPtr<umapR> out = Rcpp::XPtr<umapR>(submapptr, true);
+    Rcpp::XPtr<umapR> out = Rcpp::XPtr<umapR>(submapptr, false);
 //    delete submapptr;
     return out;//new umapR(submap), true);
   }
@@ -146,7 +146,7 @@ class uMAPR {
     //   }
     // }
     delete submapptr;
-    return Rcpp::XPtr<umapR>(&submap, true);//(new umapR(submap), true); 
+    return Rcpp::XPtr<umapR>(&submap, false);//(new umapR(submap), true); 
   }
 
   void extract_by_erasing_inplace(Rcpp::StringVector keys){

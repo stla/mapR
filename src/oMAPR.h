@@ -7,9 +7,9 @@ class oMAPR {
    Rcpp::XPtr<omapR> ptr;
    oMAPR(Rcpp::StringVector keys_, Rcpp::List values_)
      : omap(omapNew(keys_, values_)),
-       ptr(Rcpp::XPtr<omapR>(&omap, true)) {}
+       ptr(Rcpp::XPtr<omapR>(&omap, false)) {}
    oMAPR(Rcpp::XPtr<omapR> ptr_) 
-     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, true)) {}   
+     : omap(*(ptr_.get())), ptr(Rcpp::XPtr<omapR>(&omap, false)) {}   
   ~oMAPR() { 
     Rcpp::Rcout << "2) oMAPR deconstructor has been called\n";
     // if(ptr.get()){

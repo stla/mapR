@@ -185,8 +185,8 @@ map1_copy1
 map1_copy2$merge(map2, duplicated = "join")
 map1_copy2
 
-#map1_copy3$merge(map2, duplicated = "separate")
-#map1_copy3
+map1_copy3$merge(map2, duplicated = "separate")
+map1_copy3
 
 ## ------------------------------------------------
 ## Method `omapR$copy`
@@ -712,8 +712,8 @@ map1_copy1
 map1_copy2$merge(map2, duplicated = "join")
 map1_copy2
 
-#map1_copy3$merge(map2, duplicated = "separate")
-#map1_copy3
+map1_copy3$merge(map2, duplicated = "separate")
+map1_copy3
 }
 \if{html}{\out{</div>}}
 
