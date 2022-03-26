@@ -135,8 +135,9 @@ class oMAPR {
          unsigned x = submap.erase(it->first);
        }
      }
+     Rcpp::XPtr<omapR> out = Rcpp::XPtr<omapR>(new omapR(submap), false);
      delete submapptr;
-     return Rcpp::XPtr<omapR>(&submap, false);//(new omapR(submap), true); 
+     return out;
    }
    
    void extract_by_erasing_inplace(Rcpp::StringVector keys){

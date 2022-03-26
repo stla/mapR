@@ -96,10 +96,15 @@ map <- umapR$new(
   keys = c("a", "b", "c"), 
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
+map_copy <- map$copy()
 map$extract(c("a", "c"))
 map
 map$extract(c("a", "c"), inplace = TRUE)
 map
+map_copy$extract(c("a", "c"), bydeleting = TRUE)
+map_copy
+map_copy$extract(c("a", "c"), inplace = TRUE, bydeleting = TRUE)
+map_copy
 
 ## ------------------------------------------------
 ## Method `umapR$has_key`
@@ -463,10 +468,15 @@ A \code{umapR} object if \code{inplace=FALSE},
   keys = c("a", "b", "c"), 
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
+map_copy <- map$copy()
 map$extract(c("a", "c"))
 map
 map$extract(c("a", "c"), inplace = TRUE)
 map
+map_copy$extract(c("a", "c"), bydeleting = TRUE)
+map_copy
+map_copy$extract(c("a", "c"), inplace = TRUE, bydeleting = TRUE)
+map_copy
 }
 \if{html}{\out{</div>}}
 

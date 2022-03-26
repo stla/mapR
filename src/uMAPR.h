@@ -145,8 +145,9 @@ class uMAPR {
     //     submap.erase(key);
     //   }
     // }
+    Rcpp::XPtr<umapR> out = Rcpp::XPtr<umapR>(new umapR(submap), false);
     delete submapptr;
-    return Rcpp::XPtr<umapR>(&submap, false);//(new umapR(submap), true); 
+    return out;
   }
 
   void extract_by_erasing_inplace(Rcpp::StringVector keys){
