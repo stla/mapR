@@ -182,32 +182,26 @@ umapR <- R6Class(
       values
     },
     
-    #' @description Returns the value corresponding to the given key.
+    #' @description Returns the 'maybe' value corresponding to the given key.
     #'
     #' @param key a key (string)
-    #' @param stop_if_not_found a Boolean value, whether to stop if the key 
-    #'   is not found, or to return \code{NaN}
     #'
-    #' @return The value corresponding to the key, an R object.
+    #' @return A \code{maybe} value, either the value corresponding to the key 
+    #'   as a 'Just' \code{maybe} value if the key is found, otherwise the 
+    #'   'Nothing' \code{maybe} value.
+    #' 
+    #' @seealso \code{\link{from_just}}
     #'
     #' @examples
     #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
-    #' map$at("x", stop_if_not_found = FALSE)
-    at = function(key, stop_if_not_found = TRUE){
+    #' from_just(map$at("b"))
+    #' map$at("x")
+    at = function(key){
       stopifnot(isString(key))
-      stopifnot(isBoolean(stop_if_not_found))
-      if(stop_if_not_found){
-        private[[".map"]]$at(key)
-      }else{
-        tryCatch({
-          private[[".map"]]$at(key)
-        }, error = function(e){
-          NaN
-        })
-      }
+      private[[".map"]]$at(key)
     },
     
     #' @description Extract a submap from the reference map.
@@ -296,17 +290,23 @@ umapR <- R6Class(
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
-    #' @return Nothing, this updates the reference map.
+    #' @return This updates the reference map and this returns a Boolean value:
+    #'   if \code{replace=FALSE}, this returns \code{TRUE} if the value has 
+    #'   been inserted (i.e. the given key is new); similarly, if 
+    #'   \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
+    #'   (so \code{FALSE} means that the value of the existing key has been 
+    #'   replaced).
+    #' 
     #'
     #' @examples
     #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map$insert("c", c(6, 7))
+    #' map$insert("c", c(6, 7)) # TRUE (insertion)
     #' map
-    #' map$insert("a", c(8, 9))
+    #' map$insert("a", c(8, 9)) # FALSE (no change)
     #' map
-    #' map$insert("a", c(8, 9), replace = TRUE)
+    #' map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
@@ -316,7 +316,6 @@ umapR <- R6Class(
       }else{
         private[[".map"]]$insert(key, value)
       }
-      invisible(NULL)
     },
     
     #' @description Erase the entries of the reference map corresponding to 

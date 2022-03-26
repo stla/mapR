@@ -25,15 +25,15 @@ class uMAPR {
 
   unsigned size() { return umap.size(); }
 
-  Rcpp::RObject at(std::string key) {
+  Rcpp::List at(std::string key) {
     umapR::iterator it = umap.find(key);
     if(it != umap.end()) {
-      return it->second;
+      return Just(it->second);
     } else {
-      Rcpp::stop("Key not found.");
+      return Nothing();
     }
   }
-
+  
   bool has_key(std::string key) { return umap.find(key) != umap.end(); }
 
   // Rcpp::StringVector keys() {
@@ -82,14 +82,14 @@ class uMAPR {
     return out;
   }
 
-  void insert(std::string key, Rcpp::RObject value) {
+  bool insert(std::string key, Rcpp::RObject value) {
     std::pair<umapR::iterator, bool> x = umap.emplace(key, value);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
+    return x.second;
   }
 
-  void assign(std::string key, Rcpp::RObject value) {
+  bool assign(std::string key, Rcpp::RObject value) {
     std::pair<umapR::iterator, bool> x = umap.insert_or_assign(key, value);
-    // ptr = Rcpp::XPtr<umapR>(new umapR(umap, true));
+    return x.second;
   }
 
   void erase(std::string key) {

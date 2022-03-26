@@ -86,7 +86,8 @@ map <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$at("b")
-map$at("x", stop_if_not_found = FALSE)
+from_just(map$at("b"))
+map$at("x")
 
 ## ------------------------------------------------
 ## Method `umapR$extract`
@@ -186,6 +187,9 @@ map
 naive_copy <- map
 naive_copy$erase("a")
 map
+}
+\seealso{
+\code{\link{from_just}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -401,23 +405,22 @@ map$toList()
 \if{html}{\out{<a id="method-at"></a>}}
 \if{latex}{\out{\hypertarget{method-at}{}}}
 \subsection{Method \code{at()}}{
-Returns the value corresponding to the given key.
+Returns the 'maybe' value corresponding to the given key.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{umapR$at(key, stop_if_not_found = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{umapR$at(key)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{key}}{a key (string)}
-
-\item{\code{stop_if_not_found}}{a Boolean value, whether to stop if the key 
-is not found, or to return \code{NaN}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The value corresponding to the key, an R object.
+A \code{maybe} value, either the value corresponding to the key 
+  as a 'Just' \code{maybe} value if the key is found, otherwise the 
+  'Nothing' \code{maybe} value.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -425,7 +428,8 @@ The value corresponding to the key, an R object.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$at("b")
-map$at("x", stop_if_not_found = FALSE)
+from_just(map$at("b"))
+map$at("x")
 }
 \if{html}{\out{</div>}}
 
@@ -535,7 +539,12 @@ already present}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing, this updates the reference map.
+This updates the reference map and this returns a Boolean value:
+  if \code{replace=FALSE}, this returns \code{TRUE} if the value has 
+  been inserted (i.e. the given key is new); similarly, if 
+  \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
+  (so \code{FALSE} means that the value of the existing key has been 
+  replaced).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
