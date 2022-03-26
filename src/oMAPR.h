@@ -143,7 +143,7 @@ class oMAPR {
   Rcpp::XPtr<omapR> extract_by_erasing(Rcpp::StringVector keys) {
     omapR* submapptr = new omapR(omap);
     omapR submap = *submapptr;
-    for(omapR::iterator it = submap.begin(); it != submap.end(); it++) {
+    for(omapR::iterator it = omap.begin(); it != omap.end(); it++) {
       if(std::find(keys.begin(), keys.end(), it->first) == keys.end()) {
         submap.erase(it->first);
       }
