@@ -79,10 +79,26 @@ class oMAPR {
     }
     return out;
   }
+   
+   Rcpp::List toList() {
+     const unsigned s = omap.size();
+     Rcpp::StringVector Keys(s);
+     Rcpp::List Values(s);
+     unsigned i = 0;
+     for(omapR::iterator it = omap.begin(); it != omap.end(); it++) {
+       Keys(i) = it -> first;
+       Values(i) = it->second;
+       i++;
+     }
+     Rcpp::List out;
+     out["keys"] = Keys;
+     out["values"] = Values;
+     return out;
+   }
+   
 
   void insert(std::string key, Rcpp::RObject value) {
     omap.emplace(key, value);
-    //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
   }
 
   void assign(std::string key, Rcpp::RObject value) {

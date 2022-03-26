@@ -46,6 +46,7 @@ RCPP_MODULE(class_oMAPR) {
       .method("merge", &oMAPR::merge)
       .method("keys", &oMAPR::keys)
       .method("values", &oMAPR::values)
+      .method("toList", &oMAPR::toList)
       .method("extract", &oMAPR::extract)
       .method("extract_inplace", &oMAPR::extract_inplace)
       .method("extract_by_erasing", &oMAPR::extract_by_erasing)

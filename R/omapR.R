@@ -89,15 +89,16 @@ omapR <- R6Class(
       invisible(NULL)
     },
     
-    #' @description Show instance of a \code{omapR} object.
+    #' @description Show instance of an \code{omapR} object.
     #' @param ... ignored
     print = function(...) {
       size <- self$size()
       if(size == 0L){
         cat("empty `omapR` object\n")
       }else{
-        keys <- sprintf('"%s"', self$keys())
-        values <- vapply(self$values(), toString2, character(1L))
+        keys_values <- private[[".map"]]$toList()
+        keys <- sprintf('"%s"', keys_values[["keys"]])
+        values <- vapply(keys_values[["values"]], toString2, character(1L))
         s <- ifelse(size > 1L, "s", "")
         cat(sprintf("`omapR` object containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
@@ -144,7 +145,7 @@ omapR <- R6Class(
       private[[".map"]]$values()
     },
     
-    #' @description Get all entries.
+    #' @description Get all entries of the reference map.
     #'
     #' @return The entries in a dataframe.
     #'
@@ -154,8 +155,9 @@ omapR <- R6Class(
     #' )
     #' map$items()
     items = function(){
-      keys <- self$keys()
-      values <- self$values()
+      L <- private[[".map"]]$toList()
+      keys <- L[["keys"]]
+      values <- L[["values"]]
       data.frame(key = keys, value = I(values))
     },
     
@@ -169,9 +171,9 @@ omapR <- R6Class(
     #' )
     #' map$toList()
     toList = function(){
-      keys <- self$keys()
-      values <- self$values()
-      names(values) <- keys
+      L <- private[[".map"]]$toList()
+      values <- L[["values"]]
+      names(values) <- L[["keys"]]
       values
     },
     

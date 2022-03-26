@@ -292,7 +292,7 @@ omapR$new(
 \if{html}{\out{<a id="method-print"></a>}}
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
-Show instance of a \code{omapR} object.
+Show instance of an \code{omapR} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{omapR$print(...)}\if{html}{\out{</div>}}
 }
@@ -381,7 +381,7 @@ map$values()
 \if{html}{\out{<a id="method-items"></a>}}
 \if{latex}{\out{\hypertarget{method-items}{}}}
 \subsection{Method \code{items()}}{
-Get all entries.
+Get all entries of the reference map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{omapR$items()}\if{html}{\out{</div>}}
 }
