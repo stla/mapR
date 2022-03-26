@@ -177,32 +177,24 @@ omapR <- R6Class(
       values
     },
     
-    #' @description Returns the value corresponding to the given key.
+    #' @description Returns the 'maybe' value corresponding to the given key.
     #'
     #' @param key a key (string)
-    #' @param stop_if_not_found a Boolean value, whether to stop if the key 
-    #'   is not found, or to return \code{NaN}
     #'
-    #' @return The value corresponding to the key, a R object.
+    #' @return A \code{maybe} value, either the value corresponding to the key 
+    #'   as a 'Just' \code{maybe} value if the key is found, otherwise the 
+    #'   'Nothing' \code{maybe} value.
     #'
     #' @examples
     #' map <- omapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
     #' map$at("b")
-    #' map$at("x", stop_if_not_found = FALSE)
-    at = function(key, stop_if_not_found = TRUE){
+    #' from_just(map$at("b"))
+    #' map$at("x")
+    at = function(key){
       stopifnot(isString(key))
-      stopifnot(isBoolean(stop_if_not_found))
-      if(stop_if_not_found){
-        private[[".map"]]$at(key)
-      }else{
-        tryCatch({
-          private[[".map"]]$at(key)
-        }, error = function(e){
-          NaN
-        })
-      }
+      private[[".map"]]$at(key)
     },
     
     #' @description Returns the index of the given key.

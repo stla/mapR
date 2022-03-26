@@ -85,7 +85,8 @@ map <- omapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$at("b")
-map$at("x", stop_if_not_found = FALSE)
+from_just(map$at("b"))
+map$at("x")
 
 ## ------------------------------------------------
 ## Method `omapR$index`
@@ -427,23 +428,22 @@ map$toList()
 \if{html}{\out{<a id="method-at"></a>}}
 \if{latex}{\out{\hypertarget{method-at}{}}}
 \subsection{Method \code{at()}}{
-Returns the value corresponding to the given key.
+Returns the 'maybe' value corresponding to the given key.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{omapR$at(key, stop_if_not_found = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{omapR$at(key)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{key}}{a key (string)}
-
-\item{\code{stop_if_not_found}}{a Boolean value, whether to stop if the key 
-is not found, or to return \code{NaN}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The value corresponding to the key, a R object.
+A \code{maybe} value, either the value corresponding to the key 
+  as a 'Just' \code{maybe} value if the key is found, otherwise the 
+  'Nothing' \code{maybe} value.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -451,7 +451,8 @@ The value corresponding to the key, a R object.
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
 map$at("b")
-map$at("x", stop_if_not_found = FALSE)
+from_just(map$at("b"))
+map$at("x")
 }
 \if{html}{\out{</div>}}
 

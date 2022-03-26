@@ -9,7 +9,7 @@ Description: One paragraph description of what the package does as one or more
          full sentences.
 Encoding: UTF-8
 License: GPL-3
-Imports: Rcpp (>= 1.0.8), methods, R6
+Imports: Rcpp (>= 1.0.8), methods, R6, maybe
 LinkingTo: Rcpp, BH
 URL: https://github.com/stla/mapR
 BugReports: https://github.com/stla/mapR/issues

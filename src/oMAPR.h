@@ -23,12 +23,12 @@ class oMAPR {
 
   unsigned size() { return omap.size(); }
 
-  Rcpp::RObject at(std::string key) {
+  Rcpp::List at(std::string key) {
     omapR::iterator it = omap.find(key);
     if(it != omap.end()) {
-      return it->second;
+      return Just(it->second);
     } else {
-      Rcpp::stop("Key not found.");
+      return Nothing();
     }
   }
 

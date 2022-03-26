@@ -20,6 +20,21 @@ umapR umapNew(Rcpp::StringVector keys, Rcpp::List values) {
   return umap;
 }
 
+Rcpp::List Just(Rcpp::RObject x) {
+  Rcpp::List L = Rcpp::List::create(Rcpp::Named("type") = "just",
+                                    Rcpp::Named("content") = x);
+  L.attr("class") = "maybe";
+  return L;
+}
+
+Rcpp::List Nothing() {
+  Rcpp::List L = Rcpp::List::create(Rcpp::Named("type") = "nothing");
+  L.attr("class") = "maybe";
+  return L;
+}
+
+
+
 /*
 std::vector<std::string> vectordiff(Rcpp::StringVector V, Rcpp::StringVector U){
   std::vector<std::string> diff(0);
