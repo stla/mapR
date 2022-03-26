@@ -98,14 +98,22 @@ map$index("b")
 map$index("x")
 
 ## ------------------------------------------------
-## Method `omapR$submap`
+## Method `omapR$extract`
 ## ------------------------------------------------
 
 map <- omapR$new(
   keys = c("a", "b", "c"), 
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
-map$submap(c("a", "c"))
+map_copy <- map$copy()
+map$extract(c("a", "c"))
+map
+map$extract(c("a", "c"), inplace = TRUE)
+map
+map_copy$extract(c("a", "c"), bydeleting = TRUE)
+map_copy
+map_copy$extract(c("a", "c"), inplace = TRUE, bydeleting = TRUE)
+map_copy
 
 ## ------------------------------------------------
 ## Method `omapR$has_key`
@@ -215,7 +223,7 @@ map
 \item \href{#method-toList}{\code{omapR$toList()}}
 \item \href{#method-at}{\code{omapR$at()}}
 \item \href{#method-index}{\code{omapR$index()}}
-\item \href{#method-submap}{\code{omapR$submap()}}
+\item \href{#method-extract}{\code{omapR$extract()}}
 \item \href{#method-has_key}{\code{omapR$has_key()}}
 \item \href{#method-nth}{\code{omapR$nth()}}
 \item \href{#method-insert}{\code{omapR$insert()}}
@@ -301,7 +309,7 @@ Show instance of a \code{omapR} object.
 \if{html}{\out{<a id="method-size"></a>}}
 \if{latex}{\out{\hypertarget{method-size}{}}}
 \subsection{Method \code{size()}}{
-Size of the map.
+Size of the reference map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{omapR$size()}\if{html}{\out{</div>}}
 }
@@ -485,12 +493,12 @@ map$index("x")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-submap"></a>}}
-\if{latex}{\out{\hypertarget{method-submap}{}}}
-\subsection{Method \code{submap()}}{
-Extract submap.
+\if{html}{\out{<a id="method-extract"></a>}}
+\if{latex}{\out{\hypertarget{method-extract}{}}}
+\subsection{Method \code{extract()}}{
+Extract a submap from the reference map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{omapR$submap(keys)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{omapR$extract(keys, inplace = FALSE, bydeleting = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -498,11 +506,19 @@ Extract submap.
 \describe{
 \item{\code{keys}}{some keys, a character vector; those which do not belong to 
 the keys of the reference map will be ignored}
+
+\item{\code{inplace}}{Boolean, whether to update the reference map or 
+to return a new map}
+
+\item{\code{bydeleting}}{Boolean, whether to construct the submap by 
+deleting the keys which are not in \code{keys} or by starting 
+from the empty submap and adding the entries}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-An \code{omapR} object.
+An \code{omapR} object if \code{inplace=FALSE}, 
+  nothing otherwise.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -510,7 +526,15 @@ An \code{omapR} object.
   keys = c("a", "b", "c"), 
   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
 )
-map$submap(c("a", "c"))
+map_copy <- map$copy()
+map$extract(c("a", "c"))
+map
+map$extract(c("a", "c"), inplace = TRUE)
+map
+map_copy$extract(c("a", "c"), bydeleting = TRUE)
+map_copy
+map_copy$extract(c("a", "c"), inplace = TRUE, bydeleting = TRUE)
+map_copy
 }
 \if{html}{\out{</div>}}
 

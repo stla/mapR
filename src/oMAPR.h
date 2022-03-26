@@ -99,9 +99,54 @@ class oMAPR {
     for(Rcpp::String key : keys) {
       omap.erase(key);
     }
-    //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
   }
 
+   Rcpp::XPtr<omapR> extract(Rcpp::StringVector keys) {
+     omapR submap;
+     // omapR* submapptr = &submap;
+     for(Rcpp::String key : keys) {
+       omapR::iterator it = omap.find(key);
+       if(it != omap.end()) {
+         std::pair<omapR::iterator, bool> x = submap.emplace(key, it->second);
+       }
+     }
+     omapR* submapptr(new omapR(submap)); //&submap;
+     Rcpp::XPtr<omapR> out = Rcpp::XPtr<omapR>(submapptr, false);
+     //    delete submapptr;
+     return out;//new omapR(submap), true);
+   }
+   
+   void extract_inplace(Rcpp::StringVector keys) {
+     omapR submap;
+     for(Rcpp::String key : keys) {
+       omapR::iterator it = omap.find(key);
+       if(it != omap.end()) {
+         std::pair<omapR::iterator, bool> x = submap.emplace(key, it->second);
+       }
+     }
+     omap = submap;
+   }
+   
+   Rcpp::XPtr<omapR> extract_by_erasing(Rcpp::StringVector keys){
+     omapR* submapptr = new omapR(omap);
+     omapR submap = *submapptr;
+     for(omapR::iterator it = submap.begin(); it != submap.end(); it++) {
+       if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
+         unsigned x = submap.erase(it->first);
+       }
+     }
+     delete submapptr;
+     return Rcpp::XPtr<omapR>(&submap, false);//(new omapR(submap), true); 
+   }
+   
+   void extract_by_erasing_inplace(Rcpp::StringVector keys){
+     for(omapR::iterator it = omap.begin(); it != omap.end(); it++) {
+       if(std::find(keys.begin(), keys.end(), it->first) == keys.end()){
+         unsigned x = omap.erase(it->first);
+       }
+     }
+   }
+   
   void merge(Rcpp::XPtr<omapR> omap2ptr) {
     // omapR omap1 = *omapPTR;
     omapR omap2 = *(omap2ptr.get());

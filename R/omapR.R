@@ -94,18 +94,18 @@ omapR <- R6Class(
     print = function(...) {
       size <- self$size()
       if(size == 0L){
-        cat("empty `omapR`")
+        cat("empty `omapR` object\n")
       }else{
         keys <- sprintf('"%s"', self$keys())
         values <- vapply(self$values(), toString2, character(1L))
         s <- ifelse(size > 1L, "s", "")
-        cat(sprintf("`omapR` containing %d item%s:\n\n", size, s))
+        cat(sprintf("`omapR` object containing %d item%s:\n\n", size, s))
         lines <- paste0("  ", keys, " -> ", values)
         cat(lines, sep = "\n")
       }
     },
     
-    #' @description Size of the map.
+    #' @description Size of the reference map.
     #'
     #' @return An integer, the number of entries.
     #'
@@ -225,24 +225,63 @@ omapR <- R6Class(
       }
     },
     
-    #' @description Extract submap.
+    #' @description Extract a submap from the reference map.
     #'
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
+    #' @param inplace Boolean, whether to update the reference map or 
+    #'   to return a new map
+    #' @param bydeleting Boolean, whether to construct the submap by 
+    #'   deleting the keys which are not in \code{keys} or by starting 
+    #'   from the empty submap and adding the entries 
     #'
-    #' @return An \code{omapR} object.
+    #' @return An \code{omapR} object if \code{inplace=FALSE}, 
+    #'   nothing otherwise.
     #'
     #' @examples
     #' map <- omapR$new(
     #'   keys = c("a", "b", "c"), 
     #'   values = list(c(1, 2), c(3, 4, 5), c(6, 7))
     #' )
-    #' map$submap(c("a", "c"))
-    submap = function(keys){
+    #' map_copy <- map$copy()
+    #' map$extract(c("a", "c"))
+    #' map
+    #' map$extract(c("a", "c"), inplace = TRUE)
+    #' map
+    #' map_copy$extract(c("a", "c"), bydeleting = TRUE)
+    #' map_copy
+    #' map_copy$extract(c("a", "c"), inplace = TRUE, bydeleting = TRUE)
+    #' map_copy
+    extract = function(keys, inplace = FALSE, bydeleting = FALSE){
       stopifnot(isCharacterVector(keys))
-      keys <- intersect(keys, self$keys())
-      lst <- self$toList()
-      omapR$new(keys, lst[keys], checks = FALSE) 
+      stopifnot(isBoolean(inplace))
+      stopifnot(isBoolean(bydeleting))
+      if(length(keys) == 0L){
+        if(inplace){
+          private[[".map"]] <- new("oMAPR", character(0L), list())
+          invisible(NULL)
+        }else{
+          omapR$new(character(0L), list(), checks = FALSE)
+        }
+      }else{
+        if(bydeleting){
+          if(inplace){
+            private[[".map"]]$extract_by_erasing_inplace(keys)
+            invisible(NULL)
+          }else{
+            ptr <- private[[".map"]]$extract_by_erasing(keys)
+            omapR$new(ptr = ptr)
+          }
+        }else{
+          if(inplace){
+            private[[".map"]]$extract_inplace(keys)
+            invisible(NULL)
+          }else{
+            ptr <- private[[".map"]]$extract(keys)
+            omapR$new(ptr = ptr) 
+          }
+        }
+      }
     },
     
     #' @description Checks whether a key exists in the reference map.

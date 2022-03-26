@@ -99,7 +99,7 @@ umapR <- R6Class(
     print = function(...) {
       size <- self$size()
       if(size == 0L){
-        cat("empty `umapR` object")
+        cat("empty `umapR` object\n")
       }else{
         keys_values <- private[[".map"]]$toList()
         keys <- sprintf('"%s"', keys_values[["keys"]])
