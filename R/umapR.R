@@ -213,7 +213,7 @@ umapR <- R6Class(
       }
     },
     
-    #' @description Extract a submap.
+    #' @description Extract a submap from the reference map.
     #'
     #' @param keys some keys, a character vector; those which do not belong to 
     #'   the keys of the reference map will be ignored
@@ -275,7 +275,7 @@ umapR <- R6Class(
       }
     },
 
-    #' @description Checks whether a key exists in a map.
+    #' @description Checks whether a key exists in the reference map.
     #'
     #' @param key a key (string)
     #'
@@ -292,14 +292,14 @@ umapR <- R6Class(
       private[[".map"]]$has_key(key)
     },
     
-    #' @description Insert a new entry.
+    #' @description Insert a new entry in the reference map.
     #'
     #' @param key a key (string)
     #' @param value a value (R object)
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
-    #' @return Nothing, this updates the map.
+    #' @return Nothing, this updates the reference map.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -322,7 +322,8 @@ umapR <- R6Class(
       invisible(NULL)
     },
     
-    #' @description Erase some entries.
+    #' @description Erase the entries of the reference map corresponding to 
+    #'   the given keys.
     #'
     #' @param keys some keys, a character vector
     #'
@@ -347,7 +348,7 @@ umapR <- R6Class(
       invisible(NULL)
     },
     
-    #' @description Merge with another map.
+    #' @description Merge the reference map with another map.
     #'
     #' @param map a \code{umapR} object
     #' @param duplicated the action to perform if the reference map 

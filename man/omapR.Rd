@@ -405,7 +405,7 @@ map$items()
 \if{html}{\out{<a id="method-toList"></a>}}
 \if{latex}{\out{\hypertarget{method-toList}{}}}
 \subsection{Method \code{toList()}}{
-Converts the map to a list.
+Converts the map to a named list.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{omapR$toList()}\if{html}{\out{</div>}}
 }
@@ -655,7 +655,8 @@ map
 \if{html}{\out{<a id="method-erase"></a>}}
 \if{latex}{\out{\hypertarget{method-erase}{}}}
 \subsection{Method \code{erase()}}{
-Erase some entries of the reference map.
+Erase the entries of the reference map whose keys are the 
+  given ones.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{omapR$erase(keys)}\if{html}{\out{</div>}}
 }

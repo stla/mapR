@@ -438,7 +438,7 @@ map$at("x", stop_if_not_found = FALSE)
 \if{html}{\out{<a id="method-extract"></a>}}
 \if{latex}{\out{\hypertarget{method-extract}{}}}
 \subsection{Method \code{extract()}}{
-Extract a submap.
+Extract a submap from the reference map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$extract(keys, inplace = FALSE, bydeleting = FALSE)}\if{html}{\out{</div>}}
 }
@@ -487,7 +487,7 @@ map_copy
 \if{html}{\out{<a id="method-has_key"></a>}}
 \if{latex}{\out{\hypertarget{method-has_key}{}}}
 \subsection{Method \code{has_key()}}{
-Checks whether a key exists in a map.
+Checks whether a key exists in the reference map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$has_key(key)}\if{html}{\out{</div>}}
 }
@@ -519,7 +519,7 @@ map$has_key("x")
 \if{html}{\out{<a id="method-insert"></a>}}
 \if{latex}{\out{\hypertarget{method-insert}{}}}
 \subsection{Method \code{insert()}}{
-Insert a new entry.
+Insert a new entry in the reference map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$insert(key, value, replace = FALSE)}\if{html}{\out{</div>}}
 }
@@ -537,7 +537,7 @@ already present}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing, this updates the map.
+Nothing, this updates the reference map.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -560,7 +560,8 @@ map
 \if{html}{\out{<a id="method-erase"></a>}}
 \if{latex}{\out{\hypertarget{method-erase}{}}}
 \subsection{Method \code{erase()}}{
-Erase some entries.
+Erase the entries of the reference map corresponding to 
+  the given keys.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$erase(keys)}\if{html}{\out{</div>}}
 }
@@ -595,7 +596,7 @@ map
 \if{html}{\out{<a id="method-merge"></a>}}
 \if{latex}{\out{\hypertarget{method-merge}{}}}
 \subsection{Method \code{merge()}}{
-Merge with another map.
+Merge the reference map with another map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{umapR$merge(map, duplicated = "drop")}\if{html}{\out{</div>}}
 }

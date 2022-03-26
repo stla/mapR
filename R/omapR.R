@@ -159,7 +159,7 @@ omapR <- R6Class(
       data.frame(key = keys, value = I(values))
     },
     
-    #' @description Converts the map to a list.
+    #' @description Converts the map to a named list.
     #'
     #' @return A named list.
     #'
@@ -361,7 +361,8 @@ omapR <- R6Class(
       invisible(NULL)
     },
     
-    #' @description Erase some entries of the reference map.
+    #' @description Erase the entries of the reference map whose keys are the 
+    #'   given ones.
     #'
     #' @param keys some keys, a character vector
     #'
