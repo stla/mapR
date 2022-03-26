@@ -93,13 +93,14 @@ class oMAPR {
     return out;
   }
 
-  void insert(std::string key, Rcpp::RObject value) {
-    omap.emplace(key, value);
+  bool insert(std::string key, Rcpp::RObject value) {
+    std::pair<omapR::iterator, bool> x = omap.emplace(key, value);
+    return x.second;
   }
 
-  void assign(std::string key, Rcpp::RObject value) {
-    omap.insert_or_assign(key, value);
-    //     omapPTR = Rcpp::XPtr<omapR>(new omapR(omap));
+  bool assign(std::string key, Rcpp::RObject value) {
+    std::pair<omapR::iterator, bool> x = omap.insert_or_assign(key, value);
+    return x.second;
   }
 
   void erase(std::string key) {

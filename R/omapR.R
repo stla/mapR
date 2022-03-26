@@ -338,18 +338,23 @@ omapR <- R6Class(
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
-    #' @return Nothing, this updates the map.
+    #' @return This updates the reference map and this returns a Boolean value:
+    #'   if \code{replace=FALSE}, this returns \code{TRUE} if the value has 
+    #'   been inserted (i.e. the given key is new); similarly, if 
+    #'   \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
+    #'   (so \code{FALSE} means that the value of the existing key has been 
+    #'   replaced).
     #'
     #' @examples
     #' map <- omapR$new(
     #'   keys = c("a", "b"), 
     #'   values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map$insert("c", c(6, 7))
+    #' map$insert("c", c(6, 7)) # TRUE (insertion)
     #' map
-    #' map$insert("a", c(8, 9))
+    #' map$insert("a", c(8, 9)) # FALSE (no change)
     #' map
-    #' map$insert("a", c(8, 9), replace = TRUE)
+    #' map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
@@ -359,7 +364,6 @@ omapR <- R6Class(
       }else{
         private[[".map"]]$insert(key, value)
       }
-      invisible(NULL)
     },
     
     #' @description Erase the entries of the reference map whose keys are the 

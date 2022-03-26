@@ -124,11 +124,11 @@ map$has_key("x")
 map <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
-map$insert("c", c(6, 7))
+map$insert("c", c(6, 7)) # TRUE (insertion)
 map
-map$insert("a", c(8, 9))
+map$insert("a", c(8, 9)) # FALSE (no change)
 map
-map$insert("a", c(8, 9), replace = TRUE)
+map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
 map
 
 ## ------------------------------------------------
@@ -551,11 +551,11 @@ This updates the reference map and this returns a Boolean value:
 \preformatted{map <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
-map$insert("c", c(6, 7))
+map$insert("c", c(6, 7)) # TRUE (insertion)
 map
-map$insert("a", c(8, 9))
+map$insert("a", c(8, 9)) # FALSE (no change)
 map
-map$insert("a", c(8, 9), replace = TRUE)
+map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
 map
 }
 \if{html}{\out{</div>}}

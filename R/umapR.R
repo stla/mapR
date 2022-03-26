@@ -296,7 +296,6 @@ umapR <- R6Class(
     #'   \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
     #'   (so \code{FALSE} means that the value of the existing key has been 
     #'   replaced).
-    #' 
     #'
     #' @examples
     #' map <- umapR$new(
