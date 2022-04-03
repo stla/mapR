@@ -5,3 +5,5 @@ NULL
 uMAPR <- setRcppClass("uMAPR")
 
 oMAPR <- setRcppClass("oMAPR")
+
+ErrorOrObject <- setRcppClass("ErrorOrObject")
