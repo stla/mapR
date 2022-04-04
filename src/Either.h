@@ -18,11 +18,18 @@
 
 template <class T1, class T2>
 class Either {
-  union  {
+  union  Side {
   T1 left;
   T2 right;
+  Side(void){};
+  Side(const Side &);
+  // La classe est référencée en indiquant
+  // son type entre < et > ("Stack<T>").
+  // Ici, ce n'est pas une nécessité
+  // cependant.
+  ~Side(void){};
+  Side &operator=(const Side &);
 };
-  bool is_left;
   
   template <class T1_, class T2_>
   friend Either<T1_, T2_> Left(T1_ x);
@@ -30,30 +37,46 @@ class Either {
   friend Either<T1_, T2_> Right(T2_ x);
 
  public:
-  explicit Either<T1, T2>(const T2 &right_) : is_left(false), right(right_) {
-    //new(&side.right) T2;
-    // side.left = T1();
-    //side.right = right_;
-  }
-  explicit Either<T1, T2>(const T1 &left_, bool bs) : is_left(true), left(left_) {}
+   bool is_left;
+   Side side;
    
-  ~Either<T1, T2>() {}
-  Either<T1, T2>* operator&() { return &this; };
+   Either(void){};
+   Either(const Either<T1,T2> &);
+   // La classe est référencée en indiquant
+   // son type entre < et > ("Stack<T>").
+   // Ici, ce n'est pas une nécessité
+   // cependant.
+   ~Either(void){};
+   Either<T1,T2> &operator=(const Either<T1,T2> &);
+   
+  explicit Either<T1, T2>(T2 right_) : is_left(false) {
+    new(&side.right) T2;
+    // side.left = T1();
+    side.right = right_;
+  }
+  Either<T1, T2>(T1 left_, bool bs) : is_left(true) {
+      new(&side.left) T1;
+      // side.left = T1();
+      side.left = left_;
+  }
+   
+  //~Either<T1, T2>() {}
+  //const Either<T1, T2> operator&() { return &this; };
 
   bool matchLeft(T1& x) {
     if(is_left)
-      x = left;
+      x = side.left;
     return is_left;
   }
   bool matchRight(T2& x) {
     if(!is_left)
-      x = right;
+      x = side.right;
     return !is_left;
   }
 
   T1 fromLeft(T1 dflt) {
     if(is_left) {
-      return left;
+      return side.left;
     } else {
       return dflt;
     }
@@ -63,7 +86,7 @@ class Either {
     if(is_left) {
       return dflt;
     } else {
-      return right;
+      return side.right;
     }
   }
 
@@ -74,7 +97,9 @@ class Either {
    //Either& operator=(Either& other);
 };
 
-typedef class Either<std::string, Rcpp::RObject> ErrorOrObject;
+typedef Either<std::string, Rcpp::RObject> ErrorOrObject;
+typedef class Either<std::string, Rcpp::RObject>* ErrorOrObjectPtr;
+typedef class Either<std::string, Rcpp::RObject>& ErrorOrObjectRef;
 // int main(int argc, char* argv[])
 // {
 //   Either<int, float> x = Left<int, float>(5);
