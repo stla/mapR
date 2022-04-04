@@ -1,20 +1,20 @@
 #include "mapR.h"
 #include "mapR_types.h"
 
-template <class T1, class T2>
-Either<T1, T2> Left_(T1 x) {
-  Either<T1, T2> e(x, true);
-  // e.is_left = true;
-  // e.left = x;
-  return e;
-}
-template <class T1, class T2>
-Either<T1, T2> Right_(T2 x) {
-  Either<T1, T2> e(x);
-  // e.is_left = false;
-  // e.right = x;
-  return e;
-}
+// template <class T1, class T2>
+// Either<T1, T2> Left_(T1 x) {
+//   Either<T1, T2> e(x, true);
+//   // e.is_left = true;
+//   // e.left = x;
+//   return e;
+// }
+// template <class T1, class T2>
+// Either<T1, T2> Right_(T2 x) {
+//   Either<T1, T2> e(x);
+//   // e.is_left = false;
+//   // e.right = x;
+//   return e;
+// }
 
 // // [[Rcpp::export]]
 // Either<std::string, double> myright(double obj){
@@ -54,7 +54,6 @@ RCPP_MODULE(class_ErrorOrObject) {
 
       .constructor<Rcpp::RObject>()
       .constructor<std::string, bool>()
-      .constructor<Rcpp::XPtr<ErrorOrObject>, bool, bool>()
 
       .method("isLeft", &ErrorOrObject::isLeft)
       .method("isRight", &ErrorOrObject::isRight)
@@ -67,17 +66,17 @@ RCPP_MODULE(class_ErrorOrObject) {
 // class EitherFunc {
 // public:
 
-// [[Rcpp::export]]
-Rcpp::XPtr<ErrorOrObject> Left(std::string x) {
-  return Rcpp::XPtr<ErrorOrObject>(
-      new ErrorOrObject(Left_<std::string, Rcpp::RObject>(x)));
-}
-
-// [[Rcpp::export]]
-Rcpp::XPtr<ErrorOrObject> Right(Rcpp::RObject x) {
-  return Rcpp::XPtr<ErrorOrObject>(
-      new ErrorOrObject(Right_<std::string, Rcpp::RObject>(x)));
-}
+// // [[Rcpp::export]]
+// Rcpp::XPtr<ErrorOrObject> Left(std::string x) {
+//   return Rcpp::XPtr<ErrorOrObject>(
+//       new ErrorOrObject(Left_<std::string, Rcpp::RObject>(x)));
+// }
+// 
+// // [[Rcpp::export]]
+// Rcpp::XPtr<ErrorOrObject> Right(Rcpp::RObject x) {
+//   return Rcpp::XPtr<ErrorOrObject>(
+//       new ErrorOrObject(Right_<std::string, Rcpp::RObject>(x)));
+// }
 //};
 
 // RCPP_MODULE(class_EitherFunc) {

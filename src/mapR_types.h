@@ -39,6 +39,7 @@ class Either {
 public:
   bool is_left;
   Side side;
+  // Either<T1, T2> either;
   
   Either(void){};
   Either(const Either<T1, T2>&);
@@ -59,16 +60,16 @@ public:
     // side.left = T1();
     side.left = left_;
   }
-  Either<T1, T2>(Rcpp::XPtr<Either<T1, T2>> ptr_, bool a, bool b)
-    : either(ptr_.get()), is_left(either->is_left) {
-    if(is_left){
-      new(&side.left) T1;
-      side.left = either->side.left;
-    }else{
-      new(&side.right) T2;
-      side.right = either->side.right;
-    }
-  }
+  // Either<T1, T2>(Rcpp::XPtr<Either<T1, T2>> ptr_, bool a, bool b)
+  //   : either(*(ptr_.get())), is_left(either.is_left) {
+  //   if(is_left){
+  //     new(&side.left) T1;
+  //     side.left = (either.side).left;
+  //   }else{
+  //     new(&side.right) T2;
+  //     side.right = either.side.right;
+  //   }
+  // }
   
   //~Either<T1, T2>() {}
   // const Either<T1, T2> operator&() { return &this; };
@@ -104,8 +105,7 @@ public:
   
   bool isRight() { return !is_left; }
   
-private:
-  Either<T1, T2>* either;
+  
   
   // Either& operator=(Either& other);
 };
