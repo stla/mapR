@@ -18,6 +18,19 @@ Either<T1, T2> Right(T2 x)
   return e;
 }
 
+// // [[Rcpp::export]]
+// Either<std::string, double> myright(double obj){
+//   double x = obj;
+//   Either<std::string, double> e(Right<std::string, double>(x));
+//   return e;
+// }
+
+// // [[Rcpp::export]]
+// ErrorOrObject test(const Rcpp::RObject x){
+//   ErrorOrObject y(x);
+//   return y;
+// }
+
 // template <class T1, class T2> 
 // T1 fromLeft(T1 dflt, Either<T1, T2> e){
 //   if(e.is_left){
@@ -40,8 +53,9 @@ RCPP_MODULE(class_ErrorOrObject) {
   using namespace Rcpp;
   
   class_<ErrorOrObject>("ErrorOrObject")
-    
+
     .constructor<Rcpp::RObject>()
+    .constructor<std::string, bool>()
 
     .method("isLeft", &ErrorOrObject::isLeft)
     .method("isRight", &ErrorOrObject::isRight)
