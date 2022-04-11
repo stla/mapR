@@ -34,6 +34,11 @@ class uMAPR {
     }
   }
   
+  Rcpp::RObject at2(std::string key) {
+    return umap.at(key);
+  }
+    
+  
   bool has_key(std::string key) { return umap.find(key) != umap.end(); }
 
   // Rcpp::StringVector keys() {

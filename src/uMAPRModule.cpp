@@ -1,5 +1,5 @@
 #ifndef _MAPRHEADER_
-#include "mapR.h"
+#include "mapR_types.h"
 #endif
 
 #include "uMAPR.h"
@@ -11,6 +11,12 @@ void finalizer_of_umapr(uMAPR* ptr) {
   umapR umap = ptr->umap;
   umap.clear();
   //  delete ptr;
+}
+
+// [[Rcpp::export]]
+Rcpp::RObject at3(Rcpp::XPtr<umapR> ptr, std::string key){
+  umapR umap = *(ptr.get());
+  return umap.at(key);
 }
 
 RCPP_MODULE(class_uMAPR) {
@@ -25,6 +31,7 @@ RCPP_MODULE(class_uMAPR) {
 
       .method("size", &uMAPR::size)
       .method("at", &uMAPR::at)
+      .method("at2", &uMAPR::at2)
       .method("has_key", &uMAPR::has_key)
       .method("insert", &uMAPR::insert)
       .method("assign", &uMAPR::assign)

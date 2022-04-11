@@ -1,5 +1,5 @@
 #ifndef _MAPRHEADER_
-#include "mapR.h"
+#include "mapR_types.h"
 #endif
 
 #include "oMAPR.h"

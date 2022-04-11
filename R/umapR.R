@@ -87,7 +87,7 @@ umapR <- R6Class(
       }
       UMAPR <- new("uMAPR", keys, values)
       private[[".map"]] <- UMAPR
-      invisible(NULL)
+      invisible(self)
       # private[[".ptr"]] <- UMAPR$ptr
     },
     
@@ -203,6 +203,17 @@ umapR <- R6Class(
       stopifnot(isString(key))
       private[[".map"]]$at(key)
     },
+
+    #' @description Returns the value corresponding to the given key.
+    #'
+    #' @param key a key (string)
+    #'
+    #' @return The value corresponding to the given key if this key is found, 
+    #'   otherwise an error. 
+    at_unsafe = function(key){
+      stopifnot(isString(key))
+      private[[".map"]]$at2(key)
+    },
     
     #' @description Extract a submap from the reference map.
     #'
@@ -214,8 +225,8 @@ umapR <- R6Class(
     #'   deleting the keys which are not in \code{keys} or by starting 
     #'   from the empty submap and adding the entries 
     #'
-    #' @return A \code{umapR} object if \code{inplace=FALSE}, 
-    #'   nothing otherwise.
+    #' @return Invisibly: a new \code{umapR} object if \code{inplace=FALSE}, 
+    #'   otherwise the updated reference map.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -238,7 +249,7 @@ umapR <- R6Class(
       if(length(keys) == 0L){
         if(inplace){
           private[[".map"]] <- new("uMAPR", character(0L), list())
-          invisible(NULL)
+          invisible(self)
         }else{
           umapR$new(character(0L), list(), checks = FALSE)
         }
@@ -246,7 +257,7 @@ umapR <- R6Class(
         if(bydeleting){
           if(inplace){
             private[[".map"]]$extract_by_erasing_inplace(keys)
-            invisible(NULL)
+            invisible(self)
           }else{
             ptr <- private[[".map"]]$extract_by_erasing(keys)
             private[[".ptrinit"]](ptr)
@@ -257,7 +268,7 @@ umapR <- R6Class(
             # UMAPR <- new("uMAPR", ptr)
             # private[[".map"]] <- UMAPR
             private[[".map"]]$extract_inplace(keys)
-            invisible(NULL)
+            invisible(self)
           }else{
             ptr <- private[[".map"]]$extract(keys)
             private[[".ptrinit"]](ptr)
@@ -290,31 +301,47 @@ umapR <- R6Class(
     #' @param replace Boolean, whether to replace the value if the key is 
     #'   already present
     #'
-    #' @return This updates the reference map and this returns a Boolean value:
-    #'   if \code{replace=FALSE}, this returns \code{TRUE} if the value has 
-    #'   been inserted (i.e. the given key is new); similarly, if 
-    #'   \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
-    #'   (so \code{FALSE} means that the value of the existing key has been 
-    #'   replaced).
+    #' @return This updates the reference map and this returns it invisibly.
+    #'   Moreover, a message is printed, describing the update (insertion of 
+    #'   a new key, replacement of value, or no change).
     #'
     #' @examples
     #' map <- umapR$new(
     #'   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
     #' )
-    #' map$insert("c", c(6, 7)) # TRUE (insertion)
+    #' map$insert("c", c(6, 7)) # insertion
     #' map
-    #' map$insert("a", c(8, 9)) # FALSE (no change)
+    #' map$insert("a", c(8, 9)) # no change
     #' map
-    #' map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
+    #' map$insert("a", c(8, 9), replace = TRUE) # replacement
     #' map
     insert = function(key, value, replace = FALSE){
       stopifnot(isString(key))
       stopifnot(isBoolean(replace))
       if(replace){
-        private[[".map"]]$assign(key, value)
+        insertion <- private[[".map"]]$assign(key, value)
+        if(insertion){
+          message(
+            sprintf("New key '%s'.", key)
+          )
+        }else{
+          message(
+            sprintf("Value at key '%s' replaced.", key)
+          )
+        }
       }else{
-        private[[".map"]]$insert(key, value)
+        insertion <- private[[".map"]]$insert(key, value)
+        if(insertion){
+          message(
+            sprintf("New key '%s'.", key)
+          )
+        }else{
+          message(
+            sprintf("Key '%s' already present - no change.", key)
+          )
+        }
       }
+      invisible(self)
     },
     
     #' @description Erase the entries of the reference map corresponding to 
@@ -322,7 +349,7 @@ umapR <- R6Class(
     #'
     #' @param keys some keys, a character vector
     #'
-    #' @return Nothing, this updates the map.
+    #' @return The updated reference map, invisibly.
     #'
     #' @examples
     #' map <- umapR$new(
@@ -340,7 +367,7 @@ umapR <- R6Class(
       }else if(length(keys) >= 2L){
         private[[".map"]]$merase(keys)
       }
-      invisible(NULL)
+      invisible(self)
     },
     
     #' @description Merge the reference map with another map.
@@ -350,7 +377,7 @@ umapR <- R6Class(
     #'   and \code{map} have some identical keys, one of 
     #'   \code{"drop"}, \code{"join"}, or \code{"separate"}
     #'
-    #' @return Nothing, this updates the reference map.
+    #' @return The updated reference map, invisibly.
     #'
     #' @examples
     #' map1 <- umapR$new(
@@ -400,16 +427,16 @@ umapR <- R6Class(
           }
           UMAPR <- new("uMAPR", keys, values)
           private[[".map"]] <- UMAPR
-          invisible(NULL)
+          invisible(self)
         }else{
           .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
           private[[".map"]]$merge(.map2$ptr)
-          invisible(NULL)
+          invisible(self)
         }
       }else{
         .map2 <- map[[".__enclos_env__"]][["private"]][[".map"]]
         private[[".map"]]$merge(.map2$ptr)
-        invisible(NULL)
+        invisible(self)
       }
     },
     

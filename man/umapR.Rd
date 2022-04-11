@@ -124,11 +124,11 @@ map$has_key("x")
 map <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
-map$insert("c", c(6, 7)) # TRUE (insertion)
+map$insert("c", c(6, 7)) # insertion
 map
-map$insert("a", c(8, 9)) # FALSE (no change)
+map$insert("a", c(8, 9)) # no change
 map
-map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
+map$insert("a", c(8, 9), replace = TRUE) # replacement
 map
 
 ## ------------------------------------------------
@@ -202,6 +202,7 @@ map
 \item \href{#method-items}{\code{umapR$items()}}
 \item \href{#method-toList}{\code{umapR$toList()}}
 \item \href{#method-at}{\code{umapR$at()}}
+\item \href{#method-at_unsafe}{\code{umapR$at_unsafe()}}
 \item \href{#method-extract}{\code{umapR$extract()}}
 \item \href{#method-has_key}{\code{umapR$has_key()}}
 \item \href{#method-insert}{\code{umapR$insert()}}
@@ -437,6 +438,27 @@ map$at("x")
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-at_unsafe"></a>}}
+\if{latex}{\out{\hypertarget{method-at_unsafe}{}}}
+\subsection{Method \code{at_unsafe()}}{
+Returns the value corresponding to the given key.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{umapR$at_unsafe(key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{a key (string)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+The value corresponding to the given key if this key is found, 
+  otherwise an error.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-extract"></a>}}
 \if{latex}{\out{\hypertarget{method-extract}{}}}
 \subsection{Method \code{extract()}}{
@@ -461,8 +483,8 @@ from the empty submap and adding the entries}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \code{umapR} object if \code{inplace=FALSE}, 
-  nothing otherwise.
+Invisibly: a new \code{umapR} object if \code{inplace=FALSE}, 
+  otherwise the updated reference map.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -539,23 +561,20 @@ already present}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-This updates the reference map and this returns a Boolean value:
-  if \code{replace=FALSE}, this returns \code{TRUE} if the value has 
-  been inserted (i.e. the given key is new); similarly, if 
-  \code{replace=TRUE}, this returns \code{TRUE} if the given key is new 
-  (so \code{FALSE} means that the value of the existing key has been 
-  replaced).
+This updates the reference map and this returns it invisibly.
+  Moreover, a message is printed, describing the update (insertion of 
+  a new key, replacement of value, or no change).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{map <- umapR$new(
   keys = c("a", "b"), values = list(c(1, 2), c(3, 4, 5))
 )
-map$insert("c", c(6, 7)) # TRUE (insertion)
+map$insert("c", c(6, 7)) # insertion
 map
-map$insert("a", c(8, 9)) # FALSE (no change)
+map$insert("a", c(8, 9)) # no change
 map
-map$insert("a", c(8, 9), replace = TRUE) # FALSE (replacement)
+map$insert("a", c(8, 9), replace = TRUE) # replacement
 map
 }
 \if{html}{\out{</div>}}
@@ -581,7 +600,7 @@ Erase the entries of the reference map corresponding to
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing, this updates the map.
+The updated reference map, invisibly.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -620,7 +639,7 @@ and \code{map} have some identical keys, one of
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Nothing, this updates the reference map.
+The updated reference map, invisibly.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

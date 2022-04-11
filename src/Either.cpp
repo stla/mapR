@@ -1,5 +1,6 @@
-#include "mapR.h"
+#ifndef _MAPRHEADER_
 #include "mapR_types.h"
+#endif
 
 // template <class T1, class T2>
 // Either<T1, T2> Left_(T1 x) {

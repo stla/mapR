@@ -1,5 +1,5 @@
 #ifndef _MAPRHEADER_
-#include "mapR.h"
+#include "mapR_types.h"
 #endif
 
 omapR omapNew(Rcpp::StringVector keys, Rcpp::List values) {

@@ -1,21 +1,5 @@
-#ifndef _MAPRHEADER_
-#define _MAPRHEADER_
-
-//#define RCPP_USE_FINALIZE_ON_EXIT
-
-// [[Rcpp::depends(BH)]]
 #include <Rcpp.h>
-#include <boost/container/flat_map.hpp>
-#include <boost/unordered_map.hpp>
 
-
-typedef boost::container::flat_map<std::string, Rcpp::RObject> omapR;
-typedef boost::unordered::unordered_map<std::string, Rcpp::RObject> umapR;
-
-// std::vector<std::string> vectordiff(Rcpp::StringVector, Rcpp::StringVector);
-
-Rcpp::List Just(Rcpp::RObject);
-Rcpp::List Nothing();
 
 // template <class T1, class T2>
 // class Side {
@@ -131,5 +115,11 @@ public:
 typedef Either<std::string, Rcpp::RObject> ErrorOrObject;
 typedef class Either<std::string, Rcpp::RObject>* ErrorOrObjectPtr;
 typedef class Either<std::string, Rcpp::RObject>& ErrorOrObjectRef;
-
-#endif
+// int main(int argc, char* argv[])
+// {
+//   Either<int, float> x = Left<int, float>(5);
+//   int c;
+//   if (x.matchLeft(c))
+//     printf("the number is %i", c);
+//   return 0;
+// }
